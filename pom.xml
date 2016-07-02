@@ -8,8 +8,13 @@
     </parent>
 
     <artifactId>own-constraints</artifactId>
+    <packaging>pom</packaging>
 
     <inceptionYear>2016</inceptionYear>
 
+    <modules>
+        <module>maven-commmon-constraints</module>
+        <module>project-layout-constraints</module>
+    </modules>
 
 </project>
