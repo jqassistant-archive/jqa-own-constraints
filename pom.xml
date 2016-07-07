@@ -15,6 +15,7 @@
     <modules>
         <module>maven-commmon-constraints</module>
         <module>project-layout-constraints</module>
+        <module>legal-constraints</module>
     </modules>
 
 </project>
