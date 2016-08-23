@@ -5,7 +5,12 @@
 
     <rules>
         <resource>filesa.xml</resource>
-        <resource>license.xml</resource>
+
+
+        <!--
+         ! See the comment at top of license.xml
+         ! <resource>license.xml</resource>
+         !-->
     </rules>
 
 </jqa-plugin:jqassistant-plugin>

@@ -1,3 +1,10 @@
+
+<!--
+ ! This file is currently not used. See https://github.com/buschmais/jqa-core-framework/issues/5
+ ! for more details. To avoid the mentioned problem I will copy all rules to
+ ! filesa.xml.
+ ! Oliver B. Fischer, 2016-08-23
+ !-->
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
     <group id="jqa-legal:license">

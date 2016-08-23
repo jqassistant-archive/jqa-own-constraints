@@ -2,6 +2,8 @@
 
     <group id="jqa-legal">
         <includeConstraint refId="jqa-legal:license:exists"/>
+        <includeConstraint refId="jqa-legal:license:only-one-in-pom"/>
+        <includeConstraint refId="jqa-legal:license:is-correctly-defined"/>
     </group>
 
 
@@ -29,6 +31,74 @@
         ]]></cypher>
         <verify>
             <aggregation column="missing"/>
+        </verify>
+    </constraint>
+
+
+    <!--
+     ! Rules temporaly copied from license.xml
+     !-->
+
+    <constraint id="jqa-legal:license:only-one-in-pom">
+        <description><![CDATA[
+A jQAssistant project must have exactly one license specified in
+its Maven POM. This project has one or more then one license
+specified.
+            ]]></description>
+        <cypher><![CDATA[
+
+        MATCH (n:Project:Directory:Maven)-[HAS_MODEL]
+                ->(m:Maven:Pom)
+                -[USES_LICENSE]->(l:License:Maven)
+
+        WHERE NOT((n)-[:HAS_EFFECTIVE_MODEL]->(m))
+
+        RETURN
+                CASE count(l)
+                    WHEN 1 THEN 0
+                    WHEN 0 THEN 1
+                    ELSE count(l)
+                END AS existing
+        ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+    </constraint>
+
+
+    <constraint id="jqa-legal:license:is-correctly-defined">
+        <description><![CDATA[
+The license definition seems to be wrong. Please ensure
+to declare the license in this project as follows:
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, v3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH (n:Project:Directory:Maven)
+                    -[HAS_MODEL]->(m:Maven:Pom)
+                    -[USES_LICENSE]->(l:License:Maven)
+
+            WHERE NOT((n)-[:HAS_EFFECTIVE_MODEL]->(m))
+
+            WITH l
+
+            MATCH (l {name: "GNU General Public License, v3",
+                      url:"http://www.gnu.org/licenses/gpl-3.0.html"})
+
+            RETURN
+                CASE count(l)
+                    WHEN 0 THEN 1
+                    ELSE 0
+                END AS existing
+        ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
         </verify>
     </constraint>
 
