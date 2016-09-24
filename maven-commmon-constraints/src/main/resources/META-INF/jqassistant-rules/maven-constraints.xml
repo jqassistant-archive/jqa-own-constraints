@@ -1,0 +1,69 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+    <group id="jqa-maven-constraints">
+        <includeConstraint refId="jqa-maven-constraints:sonatype-oss"/>
+    </group>
+
+
+    <constraint id="jqa-maven-constraints:sonatype-oss" >
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+
+Defined the Sonatype Nexus Snapshot repository in the main POM of
+the Maven project.
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+Adding this repository to the POM helps possible contributors to get started
+with jQAssistant. If this repository is present everyone can simply clone
+the current development/snapshot version of a project and build it. Maven
+will find all other development/snapshot version of all jQAssistant dependencies
+it needs in this repository.
+
+Without this repository definition a possible contributor must add this
+to its settings.xml or build all required dependencies by itself.
+
+    ]]></description>
+
+
+
+        <!--
+         ! Rewrite this query if https://github.com/buschmais/jqa-maven3-plugin/issues/4
+         ! has been solved.
+         ! Oliver B. Fischer, 2016-09-24
+         !-->
+    <cypher><![CDATA[
+MATCH (rp:RootProject)-[:HAS_MODEL]->(m:Xml:Pom:Maven)
+          -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
+          -[:HAS_ELEMENT]->(reps:Element:Xml {name: "repositories"})
+          -[:HAS_ELEMENT]->(r:Xml:Element {name: "repository"})
+          -[:HAS_ELEMENT]->(url:Xml:Element)
+          -[:HAS_TEXT]->(t:Text:Xml {value: "https://oss.sonatype.org/content/repositories/snapshots"})
+WITH r
+
+MATCH (r)-[:HAS_ELEMENT]->(s:Xml:Element {name: "snapshots"})
+         -[:HAS_ELEMENT]->(e:Xml:Element)-[:HAS_TEXT]->(v:Xml:Text {value: 'true'})
+
+RETURN
+    CASE count(r)
+        WHEN 1 THEN 0
+        ELSE 1
+    END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+
+    </constraint>
+
+
+</jqa:jqassistant-rules>
