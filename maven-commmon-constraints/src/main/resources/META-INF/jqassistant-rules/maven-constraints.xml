@@ -48,10 +48,14 @@ MATCH (rp:RootProject)-[:HAS_MODEL]->(m:Xml:Pom:Maven)
           -[:HAS_ELEMENT]->(r:Xml:Element {name: "repository"})
           -[:HAS_ELEMENT]->(url:Xml:Element)
           -[:HAS_TEXT]->(t:Text:Xml {value: "https://oss.sonatype.org/content/repositories/snapshots"})
-WITH r
 
-MATCH (r)-[:HAS_ELEMENT]->(s:Xml:Element {name: "snapshots"})
-         -[:HAS_ELEMENT]->(e:Xml:Element)-[:HAS_TEXT]->(v:Xml:Text {value: 'true'})
+// @todo see https://github.com/buschmais/jqa-own-constraints/issues/1
+// @todo see https://github.com/buschmais/jqa-xml-plugin/issues/1
+
+//WITH r
+
+//MATCH (r)-[:HAS_ELEMENT]->(s:Xml:Element {name: "snapshots"})
+//         -[:HAS_ELEMENT]->(e:Xml:Element)-[:HAS_TEXT]->(v:Xml:Text {value: 'true'})
 
 RETURN
     CASE count(r)
