@@ -162,11 +162,6 @@ Example:
 </description>
 
 ]]></description>
-        <!--
-         ! Rewrite this query if https://github.com/buschmais/jqa-maven3-plugin/issues/5
-         ! has been solved.
-         ! Oliver B. Fischer, 2016-10-13
-         !-->
     <cypher><![CDATA[
 
         MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
