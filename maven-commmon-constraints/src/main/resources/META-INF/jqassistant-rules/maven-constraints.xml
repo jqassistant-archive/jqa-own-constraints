@@ -2,6 +2,7 @@
 
     <group id="jqa-maven-constraints">
         <includeConstraint refId="jqa-maven-constraints:sonatype-oss"/>
+        <includeConstraint refId="jqa-maven-constraints:homepage"/>
     </group>
 
 
@@ -68,6 +69,45 @@ RETURN
         </verify>
 
     </constraint>
+
+
+    <constraint id="jqa-maven-constraints:homepage" >
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+
+The homepage of jQAssistant must be defined as the homepage of
+the Maven project. Please ensure that the following line is
+present in the parent POM:
+
+<url>http://jqassistant.org/</url>
+
+]]></description>
+        <!--
+         ! Rewrite this query if https://github.com/buschmais/jqa-maven3-plugin/issues/5
+         ! has been solved.
+         ! Oliver B. Fischer, 2016-10-13
+         !-->
+    <cypher><![CDATA[
+
+        MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
+                              -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
+                              -[:HAS_ELEMENT]->(ele:Element:Xml {name: "url"})
+                              -[:HAS_TEXT]->(t:Text:Xml {
+                                              value: 'http://jqassistant.org/'
+                                             })
+
+        RETURN
+            CASE count(t)
+                WHEN 1 THEN 0
+                ELSE 1
+            END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+
+    </constraint>
+
 
 
 </jqa:jqassistant-rules>
