@@ -3,6 +3,8 @@
     <group id="jqa-maven-constraints">
         <includeConstraint refId="jqa-maven-constraints:sonatype-oss"/>
         <includeConstraint refId="jqa-maven-constraints:homepage"/>
+        <includeConstraint refId="jqa-maven-constraints:project-name"/>
+        <includeConstraint refId="jqa-maven-constraints:project-description"/>
     </group>
 
 
@@ -95,6 +97,82 @@ present in the parent POM:
                               -[:HAS_TEXT]->(t:Text:Xml {
                                               value: 'http://jqassistant.org/'
                                              })
+
+        RETURN
+            CASE count(t)
+                WHEN 1 THEN 0
+                ELSE 1
+            END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+
+    </constraint>
+
+    <constraint id="jqa-maven-constraints:project-name" >
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+
+The name of the project must be given in the Maven project. Furthermore
+the name must start with JQAssistant.
+
+Please ensure that a line similar to to the following line is
+present in the parent POM:
+
+<name>jQAssistant FooBar Plugin</name>
+
+]]></description>
+        <!--
+         ! Rewrite this query if https://github.com/buschmais/jqa-maven3-plugin/issues/5
+         ! has been solved.
+         ! Oliver B. Fischer, 2016-10-13
+         !-->
+    <cypher><![CDATA[
+
+        MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
+                              -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
+                              -[:HAS_ELEMENT]->(ele:Element:Xml {name: "name"})
+                              -[:HAS_TEXT]->(t:Text:Xml)
+        WHERE t.value STARTS WITH "jQAssistant"
+
+        RETURN
+            CASE count(t)
+                WHEN 1 THEN 0
+                ELSE 1
+            END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+
+    </constraint>
+
+    <constraint id="jqa-maven-constraints:project-description" >
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+
+The Maven project must provide a usefull description of the project.
+Please ensure that the description element is given in the Maven project.
+
+Example:
+<description>
+  This plugin for jQAssistant provides support for scanning
+  the black hole in the center of the solcar system.
+</description>
+
+]]></description>
+        <!--
+         ! Rewrite this query if https://github.com/buschmais/jqa-maven3-plugin/issues/5
+         ! has been solved.
+         ! Oliver B. Fischer, 2016-10-13
+         !-->
+    <cypher><![CDATA[
+
+        MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
+                              -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
+                              -[:HAS_ELEMENT]->(ele:Element:Xml {name: "description"})
+                              -[:HAS_TEXT]->(t:Text:Xml)
 
         RETURN
             CASE count(t)
