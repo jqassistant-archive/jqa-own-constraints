@@ -4,13 +4,16 @@
 
     <concept id="jqa-maven-constraints:mark-root-project" severity="blocker">
         <description><![CDATA[
-                     sfasdfdsf
+This concept labels the parent Maven POM of a Maven Project with
+the label RootProject. This is needed to be able to write constraints
+on the root Maven POM of a Maven project.
             ]]></description>
         <cypher><![CDATA[
 
-        MATCH (rp:Maven:Project:Directory)-[:HAS_PARENT]->(p:Maven:Project)
-        WHERE p.name in ['jqa-uber-parent', 'jqassistant.plugin.plugin-parent' ]
-        SET rp:RootProject return rp, p
+        MATCH   (rp:Maven:Project:Directory)-[:HAS_PARENT]->(p:Maven:Project)
+        WHERE   p.artifactId IN ['jqa-uber-parent', 'jqassistant.plugin.plugin-parent' ]
+        SET     rp:RootProject
+        RETURN  rp, p
 
 ]]></cypher>
     </concept>
