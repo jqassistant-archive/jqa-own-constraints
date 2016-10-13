@@ -30,4 +30,11 @@
         <module>legal-constraints</module>
     </modules>
 
+    <developers>
+        <developer>
+            <name>Oliver B. Fischer</name>
+            <email>o.b.fischer@swe-blog.net</email>
+        </developer>
+    </developers>
+
 </project>
