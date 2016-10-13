@@ -10,7 +10,16 @@
     <artifactId>own-constraints</artifactId>
     <packaging>pom</packaging>
 
+    <name>jQAssistant Own Rules</name>
+    <url>http://jqassistant.org/</url>
+
     <inceptionYear>2016</inceptionYear>
+
+    <description>
+        A set of concepts and constraints used to check the conformity
+        of various jQAssistant projects with some basic rules
+        valid for all projects of the jQAssistant projects.
+    </description>
 
     <organization>
         <name>buschmais GbR</name>
