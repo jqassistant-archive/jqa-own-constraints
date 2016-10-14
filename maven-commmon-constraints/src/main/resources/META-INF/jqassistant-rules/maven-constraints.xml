@@ -5,6 +5,7 @@
         <includeConstraint refId="jqa-maven-constraints:homepage"/>
         <includeConstraint refId="jqa-maven-constraints:project-name"/>
         <includeConstraint refId="jqa-maven-constraints:project-description"/>
+        <includeConstraint refId="jqa-maven-constraints:version-information"/>
     </group>
 
 
@@ -167,6 +168,34 @@ Example:
         MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
                               -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
                               -[:HAS_ELEMENT]->(ele:Element:Xml {name: "description"})
+                              -[:HAS_TEXT]->(t:Text:Xml)
+
+        RETURN
+            CASE count(t)
+                WHEN 1 THEN 0
+                ELSE 1
+            END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+
+    </constraint>
+
+    <constraint id="jqa-maven-constraints:version-information" >
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+
+Each Maven project must provide its own version information.
+
+Example: <version>1.9</version>
+
+]]></description>
+    <cypher><![CDATA[
+
+        MATCH (rp:RootProject)-[:HAS_MODEL]->(model:Maven:Pom:Xml)
+                              -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
+                              -[:HAS_ELEMENT]->(ele:Element:Xml {name: "version"})
                               -[:HAS_TEXT]->(t:Text:Xml)
 
         RETURN
