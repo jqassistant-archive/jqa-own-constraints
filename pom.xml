@@ -34,6 +34,12 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git@github.com:buschmais/jqa-own-constraints.git</connection>
+        <developerConnection>scm:git:git@github.com:buschmais/jqa-own-constraints.git</developerConnection>
+        <url>https://github.com/buschmais/jqa-own-constraints</url>
+    </scm>
+
     <modules>
         <module>maven-commmon-constraints</module>
         <module>project-layout-constraints</module>
