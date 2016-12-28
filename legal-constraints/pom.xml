@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>own-constraints</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>legal-constraints</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     
 </project>
