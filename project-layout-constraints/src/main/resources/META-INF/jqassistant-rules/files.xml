@@ -2,6 +2,7 @@
 
     <group id="jqa-project-layout">
         <includeConstraint refId="jqa-project-layout:readme:exists" />
+        <includeConstraint refId="jqa-project-layout:documentation:releasenotes-exists" />
     </group>
 
 
@@ -30,6 +31,37 @@
             <aggregation column="missing"/>
         </verify>
     </constraint>
+
+    <constraint id="jqa-project-layout:documentation:releasenotes-exists">
+        <description><![CDATA[
+There should be an Asciidoctor document for the release notes of this version.
+
+]]></description>
+        <cypher><![CDATA[
+            MATCH
+                (rp:RootProject:Maven)
+
+            WITH
+                '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
+                AS requiredReleaseNotes
+
+            MATCH
+                (rl:File)
+
+            WHERE
+                rl.fileName =~ requiredReleaseNotes
+
+            RETURN
+                CASE count(rl)
+                    WHEN 1 THEN 0
+                    ELSE 1
+                END AS missing
+        ]]></cypher>
+        <verify>
+            <aggregation column="missing"/>
+        </verify>
+    </constraint>
+
 
 
 </jqa:jqassistant-rules>
