@@ -32,7 +32,8 @@
         </verify>
     </constraint>
 
-    <constraint id="jqa-project-layout:documentation:releasenotes-exists">
+    <constraint id="jqa-project-layout:documentation:releasenotes-exists"
+                severity="info">
         <description><![CDATA[
 There should be an Asciidoctor document for the release notes of this version.
 
@@ -43,13 +44,17 @@ There should be an Asciidoctor document for the release notes of this version.
 
             WITH
                 '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
-                AS requiredReleaseNotes
+                    AS requiredReleaseNotes,
+                rp.artifactId AS artifactId,
+                rp.groupId AS groupId
+
 
             MATCH
                 (rl:File)
 
             WHERE
-                rl.fileName =~ requiredReleaseNotes
+                rl.fileName =~ requiredReleaseNotes //OR
+//                artifactId IN  ['jqa-distribution-specification', 'manual']
 
             RETURN
                 CASE count(rl)
