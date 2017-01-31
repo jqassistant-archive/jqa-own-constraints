@@ -9,7 +9,7 @@
     </group>
 
 
-    <constraint id="jqa-maven-constraints:sonatype-oss" >
+    <constraint id="jqa-maven-constraints:sonatype-oss" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 
@@ -74,7 +74,7 @@ RETURN
     </constraint>
 
 
-    <constraint id="jqa-maven-constraints:homepage" >
+    <constraint id="jqa-maven-constraints:homepage" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 
@@ -111,7 +111,7 @@ present in the parent POM:
 
     </constraint>
 
-    <constraint id="jqa-maven-constraints:project-name" >
+    <constraint id="jqa-maven-constraints:project-name" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 
@@ -149,7 +149,7 @@ present in the parent POM:
 
     </constraint>
 
-    <constraint id="jqa-maven-constraints:project-description" >
+    <constraint id="jqa-maven-constraints:project-description" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 
@@ -182,7 +182,7 @@ Example:
 
     </constraint>
 
-    <constraint id="jqa-maven-constraints:version-information" >
+    <constraint id="jqa-maven-constraints:version-information" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 

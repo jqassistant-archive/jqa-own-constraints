@@ -7,7 +7,7 @@
     </group>
 
 
-    <constraint id="jqa-legal:license:exists">
+    <constraint id="jqa-legal:license:exists" severity="minor">
         <description><![CDATA[
             It must exist in the root directory of the project a
             readme file called 'LICENSE'.
@@ -39,7 +39,7 @@
      ! Rules temporaly copied from license.xml
      !-->
 
-    <constraint id="jqa-legal:license:only-one-in-pom">
+    <constraint id="jqa-legal:license:only-one-in-pom" severity="minor">
         <description><![CDATA[
 A jQAssistant project must have exactly one license specified in
 its Maven POM. This project has one or more then one license

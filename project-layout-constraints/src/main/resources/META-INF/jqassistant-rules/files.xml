@@ -6,7 +6,7 @@
     </group>
 
 
-    <constraint id="jqa-project-layout:readme:exists">
+    <constraint id="jqa-project-layout:readme:exists" severity="minor">
         <description><![CDATA[
             It must exist in the root directory of the project a
             readme file called 'readme.adoc'.

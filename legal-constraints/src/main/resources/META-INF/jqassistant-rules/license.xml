@@ -13,7 +13,7 @@
     </group>
 
 
-    <constraint id="jqa-legal:license:only-one-in-pom">
+    <constraint id="jqa-legal:license:only-one-in-pom" severity="minor">
         <description><![CDATA[
 A jQAssistant project must have exactly one license specified in
 its Maven POM. This project has one or more then one license
@@ -40,7 +40,7 @@ specified.
     </constraint>
 
 
-    <constraint id="jqa-legal:license:is-correctly-defined">
+    <constraint id="jqa-legal:license:is-correctly-defined" severity="minor">
         <description><![CDATA[
 The license definition seems to be wrong. Please ensure
 to declare the license in this project as follows:
