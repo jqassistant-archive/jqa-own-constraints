@@ -61,14 +61,10 @@ MATCH (rp:RootProject)-[:HAS_MODEL]->(m:Xml:Pom:Maven)
 //MATCH (r)-[:HAS_ELEMENT]->(s:Xml:Element {name: "snapshots"})
 //         -[:HAS_ELEMENT]->(e:Xml:Element)-[:HAS_TEXT]->(v:Xml:Text {value: 'true'})
 
-RETURN
-    CASE count(r)
-        WHEN 1 THEN 0
-        ELSE 1
-    END AS existing
+RETURN *
     ]]></cypher>
         <verify>
-            <aggregation column="existing"/>
+            <rowCount min="1" max="1" />
         </verify>
 
     </constraint>
@@ -99,14 +95,10 @@ present in the parent POM:
                                               value: 'http://jqassistant.org/'
                                              })
 
-        RETURN
-            CASE count(t)
-                WHEN 1 THEN 0
-                ELSE 1
-            END AS existing
+        RETURN *
     ]]></cypher>
         <verify>
-            <aggregation column="existing"/>
+            <rowCount max="1" min="1" />
         </verify>
 
     </constraint>
@@ -137,14 +129,10 @@ present in the parent POM:
                               -[:HAS_TEXT]->(t:Text:Xml)
         WHERE t.value STARTS WITH "jQAssistant"
 
-        RETURN
-            CASE count(t)
-                WHEN 1 THEN 0
-                ELSE 1
-            END AS existing
+        RETURN *
     ]]></cypher>
         <verify>
-            <aggregation column="existing"/>
+            <rowCount max="1" min="1" />
         </verify>
 
     </constraint>
@@ -170,14 +158,10 @@ Example:
                               -[:HAS_ELEMENT]->(ele:Element:Xml {name: "description"})
                               -[:HAS_TEXT]->(t:Text:Xml)
 
-        RETURN
-            CASE count(t)
-                WHEN 1 THEN 0
-                ELSE 1
-            END AS existing
+        RETURN *
     ]]></cypher>
         <verify>
-            <aggregation column="existing"/>
+            <rowCount min="1" max="1" />
         </verify>
 
     </constraint>
@@ -198,14 +182,10 @@ Example: <version>1.9</version>
                               -[:HAS_ELEMENT]->(ele:Element:Xml {name: "version"})
                               -[:HAS_TEXT]->(t:Text:Xml)
 
-        RETURN
-            CASE count(t)
-                WHEN 1 THEN 0
-                ELSE 1
-            END AS existing
+        RETURN *
     ]]></cypher>
         <verify>
-            <aggregation column="existing"/>
+            <rowCount min="1" max="1" />
         </verify>
 
     </constraint>

@@ -21,14 +21,10 @@
             WHERE
                 readme.fileName =~ '/readme.adoc'
 
-            RETURN
-                CASE count(readme)
-                    WHEN 1 THEN 0
-                    ELSE 1
-                END AS missing
+            RETURN *
         ]]></cypher>
         <verify>
-            <aggregation column="missing"/>
+            <rowCount min="1" max="1" />
         </verify>
     </constraint>
 
@@ -45,8 +41,7 @@ There should be an Asciidoctor document for the release notes of this version.
             WITH
                 '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
                     AS requiredReleaseNotes,
-                rp.artifactId AS artifactId,
-                rp.groupId AS groupId
+                rp
 
 
             MATCH
@@ -54,16 +49,13 @@ There should be an Asciidoctor document for the release notes of this version.
 
             WHERE
                 rl.fileName =~ requiredReleaseNotes //OR
-//                artifactId IN  ['jqa-distribution-specification', 'manual']
+//                rp.artifactId IN  ['jqa-distribution-specification', 'manual']
 
             RETURN
-                CASE count(rl)
-                    WHEN 1 THEN 0
-                    ELSE 1
-                END AS missing
+                rp.name     AS Project
         ]]></cypher>
         <verify>
-            <aggregation column="missing"/>
+            <rowCount min="1" max="1" />
         </verify>
     </constraint>
 
