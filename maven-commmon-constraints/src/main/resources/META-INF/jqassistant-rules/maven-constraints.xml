@@ -195,7 +195,7 @@ Example: <version>1.9</version>
         <description><![CDATA[
 
 The Maven Compiler plugin must NOT define a Java bytecode target version other than "1.7" as the framework and the plugins
-must be executable in contexts where only Java 7 is available.
+must be executable in environments where only Java 7 is available.
 
 Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. "1.8".
 
