@@ -18,5 +18,18 @@ on the root Maven POM of a Maven project.
 ]]></cypher>
     </concept>
 
+    <concept id="jqa-maven-constraints:jQAssistantArtifact" severity="blocker">
+        <description><![CDATA[
+This concept labels all artifacts with a groupId starting with "com.buschmais.jqassistant" with "jQAssistant".
+            ]]></description>
+        <cypher><![CDATA[
+
+        MATCH   (artifact:Artifact)
+        WHERE   artifact.group starts with "com.buschmais.jqassistant"
+        SET     artifact:jQAssistant
+        RETURN  artifact
+
+]]></cypher>
+    </concept>
 
 </jqa:jqassistant-rules>

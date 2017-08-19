@@ -7,6 +7,7 @@
         <includeConstraint refId="jqa-maven-constraints:project-description"/>
         <includeConstraint refId="jqa-maven-constraints:version-information"/>
         <includeConstraint refId="jqa-maven-constraints:java-compiler-target"/>
+        <includeConstraint refId="jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts"/>
     </group>
 
 
@@ -142,7 +143,7 @@ present in the parent POM:
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
 
-The Maven project must provide a usefull description of the project.
+The Maven project must provide a useful description of the project.
 Please ensure that the description element is given in the Maven project.
 
 Example:
@@ -215,4 +216,26 @@ Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. 
 
     </constraint>
 
+    <constraint id="jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts" severity="critical">
+        <requiresConcept refId="jqa-maven-constraints:jQAssistantArtifact"/>
+        <description><![CDATA[
+
+The main artifact created by a jQAssistant Maven project must not depend on jQAssistant test artifacts (i.e. type "test-jar").
+
+Usually the reason is a missing "test" scope declaration in the dependency.
+
+]]></description>
+        <cypher><![CDATA[
+
+        MATCH
+          (project:Maven:Project)-[:CREATES]->(artifact:Artifact)-[:DEPENDS_ON]->(jQAssistantTestArtifact:jQAssistant:Artifact)
+        WHERE
+          artifact.type <> "test-jar"
+          and jQAssistantTestArtifact.type = "test-jar"
+        RETURN
+          project as MavenProject, jQAssistantTestArtifact as TestArtifact
+
+    ]]></cypher>
+
+    </constraint>
 </jqa:jqassistant-rules>
