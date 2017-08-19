@@ -222,7 +222,7 @@ Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. 
 
 The main artifact created by a jQAssistant Maven project must not depend on jQAssistant test artifacts (i.e. type "test-jar").
 
-Usually the reason is a missing "test" scope declaration in the dependency.
+Usually the reason is a missing "test" scope in the dependency declaration.
 
 ]]></description>
         <cypher><![CDATA[
