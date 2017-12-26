@@ -1,9 +1,30 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
     <group id="jqa-project-layout">
-        <includeConstraint refId="jqa-project-layout:readme:exists" />
         <includeConstraint refId="jqa-project-layout:documentation:releasenotes-exists" />
+        <includeConstraint refId="jqa-project-layout:editorconfig:exists" />
+        <includeConstraint refId="jqa-project-layout:readme:exists" />
     </group>
+
+    <constraint id="jqa-project-layout:editorconfig:exists" severity="minor">
+        <description><![CDATA[
+Each repository should contain an editor config configuration file
+called '.editorconfig' in its root directory. For more
+details on '.editorconfig' see http://editorconfig.org/
+]]></description>
+        <cypher><![CDATA[
+            MATCH
+                (config:File)
+
+            WHERE
+                config.fileName =~ '/.editorconfig'
+
+            RETURN *
+        ]]></cypher>
+        <verify>
+            <rowCount min="1" max="1" />
+        </verify>
+    </constraint>
 
 
     <constraint id="jqa-project-layout:readme:exists" severity="minor">
