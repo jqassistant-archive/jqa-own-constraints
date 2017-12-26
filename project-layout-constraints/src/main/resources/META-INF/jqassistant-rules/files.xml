@@ -43,13 +43,11 @@ There should be an Asciidoctor document for the release notes of this version.
                     AS requiredReleaseNotes,
                 rp
 
-
             MATCH
                 (rl:File)
 
             WHERE
-                rl.fileName =~ requiredReleaseNotes //OR
-//                rp.artifactId IN  ['jqa-distribution-specification', 'manual']
+                rl.fileName =~ requiredReleaseNotes
 
             RETURN
                 rp.name     AS Project
