@@ -149,7 +149,7 @@ Please ensure that the description element is given in the Maven project.
 Example:
 <description>
   This plugin for jQAssistant provides support for scanning
-  the black hole in the center of the solcar system.
+  the black hole in the center of the solar system.
 </description>
 
 ]]></description>
