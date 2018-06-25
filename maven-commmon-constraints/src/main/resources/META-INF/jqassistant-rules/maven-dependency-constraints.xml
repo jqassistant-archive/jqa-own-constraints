@@ -1,0 +1,129 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+    <group id="jqa-maven-dependency-constraints">
+        <includeConstraint refId="jqa-maven-dependency-constraints:common-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:java-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:java8-declaration"/>
+    </group>
+
+    <constraint id="jqa-maven-dependency-constraints:common-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:common must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>common</artifactId>
+    <version>${jqa-plugin-common.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>common</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-plugin-common.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(:Pom {fileName: 'pom.xml'})
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'common' })
+        WHERE dependency.version <> '${jqa-plugin-common.version}'
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:java-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:java must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>java</artifactId>
+    <version>${jqa-java-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>java</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-java-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(:Pom {fileName: 'pom.xml'})
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'java' })
+        WHERE dependency.version <> '${jqa-java-plugin.version}'
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:java8-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:java must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>java8</artifactId>
+    <version>${jqa-java8-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>java8</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-java8-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(:Pom {fileName: 'pom.xml'})
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'java8' })
+        WHERE dependency.version <> '${jqa-java8-plugin.version}'
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+</jqa:jqassistant-rules>

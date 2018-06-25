@@ -6,5 +6,6 @@
     <rules>
         <resource>concepts.xml</resource>
         <resource>maven-constraints.xml</resource>
+        <resource>maven-dependency-constraints.xml</resource>
     </rules>
 </jqa-plugin:jqassistant-plugin>
