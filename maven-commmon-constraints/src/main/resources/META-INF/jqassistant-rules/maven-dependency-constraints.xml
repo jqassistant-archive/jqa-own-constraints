@@ -1,12 +1,19 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
     <group id="jqa-maven-dependency-constraints">
+        <!--
+          Deaktivated. Constraint for the core framework is not finished yet.
+          Oliver B. Fischer, 2018-07-01
+        <includeConstraint refId="jqa-maven-dependency-constraints:core-declaration"/>
+         -->
+        <includeConstraint refId="jqa-maven-dependency-constraints:cdi-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:common-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:ejb-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:java-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:java8-declaration"/>
-        <includeConstraint refId="jqa-maven-dependency-constraints:xml-declaration"/>
-        <includeConstraint refId="jqa-maven-dependency-constraints:ejb-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:jpa2-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:junit-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:xml-declaration"/>
     </group>
 
     <constraint id="jqa-maven-dependency-constraints:common-declaration" severity="blocker">
@@ -222,7 +229,7 @@ The release tools of jQAssistant require a specific way of declaring
 dependencies on other jQAssistant artifacts. The version information must
 be given in form of a Maven property with a specific name.
 
-A dependency on com.buschmais.jqassistant.plugin:ejb must be declared
+A dependency on com.buschmais.jqassistant.plugin:jpa2 must be declared
 as follows:
 
 <dependency>
@@ -252,6 +259,144 @@ or
                                                      name: 'jpa2' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
               dependency.version <> '${jqa-jpa2-plugin.version}'
+
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:cdi-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:cdi must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>cdi</artifactId>
+    <version>${jqa-cdi-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>cdi</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-cdi-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'cdi' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+              dependency.version <> '${jqa-cdi-plugin.version}'
+
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:junit-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:cdi must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>junit</artifactId>
+    <version>${jqa-junit-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>junit</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-junit-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'junit' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+              dependency.version <> '${jqa-junit-plugin.version}'
+
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:core-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.core:parent must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.core</groupId>
+    <artifactId>parent</artifactId>
+    <version>${jqa-core.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.core</groupId>
+    <artifactId>parent</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-core.version}</version>
+    <scope>test</scope>
+</dependency>
+
+The same applies for the following Maven artifacts too:
+
+- com.buschmais.jqassistant.core:analysis
+- com.buschmais.jqassistant.core:plugin
+- com.buschmais.jqassistant.core:report
+- com.buschmais.jqassistant.core:scanner
+- com.buschmais.jqassistant.core:shared
+- com.buschmais.jqassistant.core:store
+
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
+                                     -[:DECLARES_DEPENDENCY]
+                                     ->(dependency { group: 'com.buschmais.jqassistant.core' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+
+              dependency.name IN ['parent', 'analysis', 'report', 'shared',
+                                  'store', 'scanner', 'plugin'] AND
+              dependency.version <> '${jqa-core.version}'
 
         RETURN dependency
     ]]></cypher>
