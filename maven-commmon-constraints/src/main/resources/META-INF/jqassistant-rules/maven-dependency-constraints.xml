@@ -6,6 +6,7 @@
           Oliver B. Fischer, 2018-07-01
         <includeConstraint refId="jqa-maven-dependency-constraints:core-declaration"/>
          -->
+        <includeConstraint refId="jqa-maven-dependency-constraints:backend-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:cdi-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:common-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:core-declaration"/>
@@ -398,6 +399,57 @@ The same applies for the following Maven artifacts too:
               dependency.name IN ['parent', 'analysis', 'report', 'shared',
                                   'store', 'scanner', 'plugin'] AND
               dependency.version <> '${jqa-core-framework.version}'
+
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+
+    <constraint id="jqa-maven-dependency-constraints:backend-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.neo4jserver:parent must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.neo4jserver</groupId>
+    <artifactId>parent</artifactId>
+    <version>${jqa-neo4jbackend.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.neo4jserver</groupId>
+    <artifactId>parent</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-neo4jbackend.version}</version>
+    <scope>test</scope>
+</dependency>
+
+The same applies for the following Maven artifacts too:
+
+- com.buschmais.jqassistant.neo4jserver:bootstrap
+- com.buschmais.jqassistant.neo4jserver:neo4jv2
+- com.buschmais.jqassistant.neo4jserver:neo4jv3
+
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
+                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
+                                     ->(dependency { group: 'com.buschmais.jqassistant.neo4jserver' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+              pom.groupId <> 'com.buschmais.jqassistant.neo4jserver' AND
+              dependency.name IN ['parent', 'bootstrap', 'neo4jv2', 'neo4jv3'] AND
+              dependency.version <> '${jqa-neo4jbackend.version}'
 
         RETURN dependency
     ]]></cypher>
