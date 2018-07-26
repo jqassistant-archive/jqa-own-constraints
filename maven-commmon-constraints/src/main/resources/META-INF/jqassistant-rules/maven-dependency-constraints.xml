@@ -460,10 +460,13 @@ as follows:
         // other Maven related files as dependency-reduced-pom.xml
         MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
                                      -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant',
-                                                     name: 'own-constraints' })
+                                     ->(dependency { group:'com.buschmais.jqassistant' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-own-constraints.version}'
+              dependency.version <> '${jqa-own-constraints.version}' AND
+              dependency.name IN ['project-layout-constraints',
+                                  'maven-commmon-constraints',
+                                  'legal-constraints',
+                                  'own-constraints']
 
         RETURN dependency
     ]]></cypher>
@@ -555,6 +558,7 @@ The same applies for the following Maven artifacts too:
 - com.buschmais.jqassistant.neo4jserver:bootstrap
 - com.buschmais.jqassistant.neo4jserver:neo4jv2
 - com.buschmais.jqassistant.neo4jserver:neo4jv3
+- com.buschmais.jqassistant.neo4jserver:test
 
     ]]></description>
 
@@ -567,7 +571,7 @@ The same applies for the following Maven artifacts too:
                                      ->(dependency { group: 'com.buschmais.jqassistant.neo4jserver' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
               pom.groupId <> 'com.buschmais.jqassistant.neo4jserver' AND
-              dependency.name IN ['parent', 'bootstrap', 'neo4jv2', 'neo4jv3'] AND
+              dependency.name IN ['parent', 'bootstrap', 'neo4jv2', 'neo4jv3', 'test'] AND
               dependency.version <> '${jqa-neo4jbackend.version}'
 
         RETURN dependency
