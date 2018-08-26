@@ -17,6 +17,7 @@
         <includeConstraint refId="jqa-maven-dependency-constraints:junit-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:json-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:own-constraints"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:tycho-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:xml-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:yaml-declaration"/>
     </group>
@@ -186,6 +187,48 @@ or
     ]]></cypher>
     </constraint>
 
+    <constraint id="jqa-maven-dependency-constraints:tycho-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:tycho must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>tycho</artifactId>
+    <version>${jqa-tycho-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>tycho</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-tycho-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
+                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'tycho' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+              dependency.version <> '${jqa-tycho-plugin.version}'
+
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
     <constraint id="jqa-maven-dependency-constraints:ejb-declaration" severity="blocker">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
@@ -198,7 +241,7 @@ as follows:
 
 <dependency>
     <groupId>com.buschmais.jqassistant.plugin</groupId>
-    <artifactId>xml</artifactId>
+    <artifactId>ejb</artifactId>
     <version>${jqa-ejb-plugin.version}</version>
 </dependency>
 
@@ -206,7 +249,7 @@ or
 
 <dependency>
     <groupId>com.buschmais.jqassistant.plugin</groupId>
-    <artifactId>xml</artifactId>
+    <artifactId>ejb</artifactId>
     <type>test-jar</type>
     <version>${jqa-ejb-plugin.version}</version>
     <scope>test</scope>
@@ -220,9 +263,9 @@ or
         MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
                                      -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
                                      ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'ejb' })
+                                                     name: 'ejb3' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-ejb-plugin.version}'
+              dependency.version <> '${jqa-ejb3-plugin.version}'
         RETURN dependency
     ]]></cypher>
     </constraint>
