@@ -11,6 +11,7 @@
         <includeConstraint refId="jqa-maven-dependency-constraints:common-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:core-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:ejb-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:jaxrs-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:java-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:java8-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:jpa2-declaration"/>
@@ -269,6 +270,48 @@ or
                                                      name: 'ejb3' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
               dependency.version <> '${jqa-ejb3-plugin.version}'
+        RETURN dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:jaxrs-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:jaxrs must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>jaxrs</artifactId>
+    <version>${jqa-jaxrs-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>jpa2</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-jaxrs-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
+                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
+                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                     name: 'jaxrs' })
+        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
+              dependency.version <> '${jqa-jaxrs-plugin.version}'
+
         RETURN dependency
     ]]></cypher>
     </constraint>
