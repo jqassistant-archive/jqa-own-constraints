@@ -3,13 +3,13 @@
     <parent>
         <groupId>com.buschmais.jqassistant</groupId>
         <artifactId>jqa-uber-parent</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <groupId>com.buschmais.jqassistant</groupId>
     <artifactId>own-constraints</artifactId>
     <packaging>pom</packaging>
-    <version>1.5.0</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <name>jQAssistant Own Rules</name>
     <url>http://jqassistant.org/</url>
