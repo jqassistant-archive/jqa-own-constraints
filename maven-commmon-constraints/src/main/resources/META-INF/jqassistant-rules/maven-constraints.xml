@@ -195,10 +195,11 @@ Example: <version>1.9</version>
     <constraint id="jqa-maven-constraints:java-compiler-target" severity="critical">
         <description><![CDATA[
 
-The Maven Compiler plugin must NOT define a Java bytecode target version other than "1.7" as the framework and the plugins
-must be executable in environments where only Java 7 is available.
+The Maven Compiler plugin must NOT define a Java bytecode target version other than
+"1.8" as the framework and the plugins must be executable in environments where
+only Java 8 is available.
 
-Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. "1.8".
+Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. "1.9".
 
 ]]></description>
         <cypher><![CDATA[
@@ -208,7 +209,7 @@ Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. 
           (plugin)-[:IS_ARTIFACT]->(:Artifact{name:"maven-compiler-plugin"}),
           (plugin)-[:HAS_CONFIGURATION]->(:Configuration)-[:CONTAINS]->(target:Property{name:"target"})
         WHERE
-          target.value <> "1.7"
+          target.value <> "1.8"
         RETURN
           project as MavenProject, target.value as InvalidCompilerTarget
 
