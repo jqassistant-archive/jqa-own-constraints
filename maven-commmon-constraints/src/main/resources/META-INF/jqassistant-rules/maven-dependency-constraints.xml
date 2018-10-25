@@ -29,7 +29,9 @@
         <includeConstraint refId="jqa-maven-dependency-constraints:tycho-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:xml-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:yaml-declaration"/>
+        <!--
         <includeConstraint refId="jqa-maven-dependency-constraints:asciidoctor-util-declaration"/>
+        -->
     </group>
 
     <constraint id="jqa-maven-dependency-constraints:common-declaration" severity="blocker">
