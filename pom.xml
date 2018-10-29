@@ -46,6 +46,7 @@
         <module>maven-commmon-constraints</module>
         <module>project-layout-constraints</module>
         <module>legal-constraints</module>
+        <module>plugin-rules</module>
     </modules>
 
     <developers>

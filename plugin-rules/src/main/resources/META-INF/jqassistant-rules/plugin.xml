@@ -1,0 +1,91 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+
+    <group id="jqa-plugin:Default">
+        <includeConstraint refId="jqa-plugin:UnregisteredLabel"/>
+        <includeConstraint refId="jqa-plugin:ImplictlyRegisteredLabelsShouldNotBeRegisteredExplicitly"/>
+    </group>
+
+    <concept id="jqa-plugin:Label" severity="info">
+        <description><![CDATA[
+        Adds the labels "XO" and "Label" to all interfaces representing XO labels.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:Main:Artifact)-[:CONTAINS]->(label:Interface),
+              (label)-[:IMPLEMENTS*0..]->(:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(:Type{fqn:"com.buschmais.xo.neo4j.api.annotation.Label"})
+            SET
+              label:XO:Label
+            RETURN
+              label.fqn
+        ]]></cypher>
+    </concept>
+
+    <concept id="jqa-plugin:PluginDescriptor" severity="info">
+        <description><![CDATA[
+        Adds a label "PluginDescriptor" to classpath resources "/META-INF/jqassistant-plugin.xml".
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:Main:Artifact)-[:CONTAINS]->(pluginDescriptor:File:Xml{fileName:"/META-INF/jqassistant-plugin.xml"})
+            SET
+              pluginDescriptor:jQAssistant:PluginDescriptor
+            RETURN
+              pluginDescriptor
+        ]]></cypher>
+    </concept>
+
+    <concept id="jqa-plugin:PluginDescriptorRegistersModel" severity="info">
+        <requiresConcept refId="jqa-plugin:PluginDescriptor"/>
+        <description><![CDATA[
+        Creates a relationship REGISTERS_MODEL from /model/class-XML nodes to the corresponding model types.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:PluginDescriptor)-[:HAS_ROOT_ELEMENT]->()-[:HAS_ELEMENT]->(model:Element{name:"model"}),
+              (model)-[:HAS_ELEMENT]->(class:Element)-[:HAS_TEXT]->(className:Text)
+            WITH
+              class, className
+            MATCH
+              (:Main:Artifact)-[:CONTAINS]->(type:Type)
+            WHERE
+              className.value = type.fqn
+            MERGE
+              (class)-[:REGISTERS_MODEL]->(type)
+            RETURN
+              type.fqn as Type
+        ]]></cypher>
+    </concept>
+
+    <constraint id="jqa-plugin:UnregisteredLabel">
+        <requiresConcept refId="jqa-plugin:Label"/>
+        <requiresConcept refId="jqa-plugin:PluginDescriptorRegistersModel"/>
+        <description><![CDATA[
+        All XO @Label types must be registered in the plugin descriptor.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (label:XO:Label)
+            WHERE NOT
+              ()-[:REGISTERS_MODEL]->()-[:IMPLEMENTS*0..]->(label)
+            RETURN
+              label as UnregisteredLabel
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-plugin:ImplictlyRegisteredLabelsShouldNotBeRegisteredExplicitly" severity="info">
+        <requiresConcept refId="jqa-plugin:Label"/>
+        <requiresConcept refId="jqa-plugin:PluginDescriptorRegistersModel"/>
+        <description><![CDATA[
+        XO @Label-interfaces should not be registered explicitly if a deriving interface registers it implicitly.
+
+        Rationale: Reduce class loading/initialization time at startup in larger classpath contexts (e.g. Maven plugin).
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              ()-[:REGISTERS_MODEL]->(label:XO:Label),
+              (subLabel:XO:Label)-[:IMPLEMENTS*]->(label)
+            RETURN
+              label as Label, collect(subLabel) as SubLabels
+        ]]></cypher>
+    </constraint>
+</jqa:jqassistant-rules>
