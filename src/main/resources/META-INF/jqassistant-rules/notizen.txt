@@ -11,7 +11,7 @@
                                      <groupId>com.buschmais.jqassistant.plugin</groupId>
                                      <artifactId>jqassistant.plugin.common</artifactId>
                                      <type>xsl</type>
-                                     <classifier>rules2asciidoc-v2</classifier>
+                                     <classifier>rules2asciidoc</classifier>
                                  </dependency>
   definiert? Diese Artefakte werden benötigt, um Teile der Dokumentation zu generieren
 
