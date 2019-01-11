@@ -983,7 +983,6 @@ or
 The same applies for the following Maven artifacts too:
 
 - com.buschmais.jqassistant.neo4jserver:bootstrap
-- com.buschmais.jqassistant.neo4jserver:neo4jv2
 - com.buschmais.jqassistant.neo4jserver:neo4jv3
 - com.buschmais.jqassistant.neo4jserver:test
 
@@ -998,7 +997,7 @@ The same applies for the following Maven artifacts too:
                                      ->(dependency { group: 'com.buschmais.jqassistant.neo4jserver' })
         WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
               pom.groupId <> 'com.buschmais.jqassistant.neo4jserver' AND
-              dependency.name IN ['parent', 'bootstrap', 'neo4jv2', 'neo4jv3', 'test'] AND
+              dependency.name IN ['parent', 'bootstrap', 'neo4jv3', 'test'] AND
               dependency.version <> '${jqa-neo4jbackend.version}'
 
         RETURN dependency
