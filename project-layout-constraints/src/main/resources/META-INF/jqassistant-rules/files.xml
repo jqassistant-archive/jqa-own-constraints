@@ -50,7 +50,7 @@ details on '.editorconfig' see http://editorconfig.org/
     </constraint>
 
     <constraint id="jqa-project-layout:documentation:releasenotes-exists"
-                severity="info">
+                severity="minor">
         <description><![CDATA[
 There should be an Asciidoctor document for the release notes of this version.
 
