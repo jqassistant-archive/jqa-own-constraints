@@ -60,7 +60,7 @@ There should be an Asciidoctor document for the release notes of this version.
                 (rp:RootProject:Maven)
 
             WITH
-                '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
+                '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]releasenotes[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
                     AS requiredReleaseNotes,
                 rp
 
