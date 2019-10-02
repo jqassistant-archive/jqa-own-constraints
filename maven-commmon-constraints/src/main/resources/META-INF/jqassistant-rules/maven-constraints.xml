@@ -7,6 +7,7 @@
         <includeConstraint refId="jqa-maven-constraints:project-description"/>
         <includeConstraint refId="jqa-maven-constraints:version-information"/>
         <includeConstraint refId="jqa-maven-constraints:java-compiler-target"/>
+        <includeConstraint refId="jqa-maven-constraints:scm-connection-declaration"/>
         <includeConstraint refId="jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts"/>
     </group>
 
@@ -239,4 +240,40 @@ Usually the reason is a missing "test" scope in the dependency declaration.
     ]]></cypher>
 
     </constraint>
+
+    <constraint id="jqa-maven-constraints:scm-connection-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The SCM section of this jQAssistant project seems to be not correct. Please
+ensure that the developer connection and the connection point to a repository
+in the jQAssistant organization at Github.
+
+The SCM section of this project should be similar to this one:
+
+<scm>
+    <connection>scm:git:git@github.com:jqassistant/jqa-xyz-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jqassistant/jqa-xzy-plugin.git</developerConnection>
+    <url>https://github.com/jqassistant/jqa-xyz-plugin</url>
+</scm>
+
+    ]]></description>
+        <cypher><![CDATA[
+            MATCH
+                (n:Project:Directory:Maven:RootProject)-[HAS_MODEL]->(m:Maven:Pom)
+                -[HAS_SCM]->(s:Scm:Maven)
+            WHERE
+                s.developerConnection STARTS WITH "scm:git:git@github.com:jqassistant/"
+                AND s.connection STARTS WITH "scm:git:git@github.com:jqassistant/"
+                AND s.url STARTS WITH "https://github.com/jqassistant/"
+            RETURN
+                CASE count(s)
+                    WHEN 0 THEN 1
+                    ELSE 0
+                END AS existing
+    ]]></cypher>
+        <verify>
+            <aggregation column="existing"/>
+        </verify>
+    </constraint>
+
 </jqa:jqassistant-rules>
