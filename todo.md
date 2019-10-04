@@ -1,1 +1,0 @@
-- Regel, ob SCM gesetzt. Prüfe Github Issues!
