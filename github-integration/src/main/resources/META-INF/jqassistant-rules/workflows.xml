@@ -1,0 +1,27 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+    <group id="jqa-github-integration">
+        <includeConstraint refId="jqa-github-integration:githubaction:std-ci-workflow-exists" />
+    </group>
+
+    <constraint id="jqa-github-integration:githubaction:std-ci-workflow-exists" severity="minor">
+        <description><![CDATA[
+It seems so, that the definition of the standard CI workflow for
+Github Action is missing.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+                (readme:File)
+
+            WHERE
+                readme.fileName =~ '/.github/workflows/std-ci-workflow.yaml'
+
+            RETURN *
+        ]]></cypher>
+        <verify>
+            <rowCount min="1" max="1" />
+        </verify>
+    </constraint>
+
+
+</jqa:jqassistant-rules>
