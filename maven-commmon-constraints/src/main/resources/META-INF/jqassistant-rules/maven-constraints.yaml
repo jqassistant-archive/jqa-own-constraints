@@ -1,0 +1,37 @@
+constraints:
+  - id: jqa-maven-constraints:organisation-present
+    requiresConcepts:
+      - refId: jqa-maven-constraints:mark-root-project
+    source: |
+      WITH [
+        { name: 'name', value: 'jQAssistant Development Team'},
+        { name: 'url', value: 'https://jqassistant.org'}
+      ] AS expectedChilds
+      UNWIND expectedChilds AS expectedChild
+      MATCH (rp:RootProject)-[:HAS_MODEL]->(m:Xml:Pom:Maven)
+            -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
+            -[:HAS_ELEMENT]->(org:Element:Xml {name: "organization"})
+            -[:HAS_ELEMENT]->(child:Element:Xml),
+
+            (child)-[:HAS_TEXT]->(text)
+
+      WHERE child.name = expectedChild.name
+            AND text.value = expectedChild.value
+
+      RETURN child
+    verify:
+      rowCount:
+        min: 2
+        max: 2
+    description: |
+      The information on the organisation of the jQAssistant project
+      is not correct or even missing.
+
+      Below you can find the correct way to specify the organisation
+      in the toplevel POM of the Maven project.
+
+      <organization>
+        <name>jQAssistant Development Team</name>
+        <url>https://jqassistant.org</url>
+      </organization>
+

@@ -9,6 +9,7 @@
         <includeConstraint refId="jqa-maven-constraints:java-compiler-target"/>
         <includeConstraint refId="jqa-maven-constraints:scm-connection-declaration"/>
         <includeConstraint refId="jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts"/>
+        <includeConstraint refId="jqa-maven-constraints:organisation-present"/>
     </group>
 
 
