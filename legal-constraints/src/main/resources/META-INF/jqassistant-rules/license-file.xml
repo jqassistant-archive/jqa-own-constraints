@@ -1,12 +1,7 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
     <group id="jqa-legal">
-        <!--
-         ! For details see
-         ! https://github.com/buschmais/jqa-own-constraints/issues/4.
-         ! Oliver B. Fischer, 2017-05-21
-         !-->
-        <!--includeConstraint refId="jqa-legal:license:exists"/-->
+        <includeConstraint refId="jqa-legal:license:exists"/>
         <includeConstraint refId="jqa-legal:license:only-one-in-pom"/>
         <includeConstraint refId="jqa-legal:license:is-correctly-defined"/>
     </group>

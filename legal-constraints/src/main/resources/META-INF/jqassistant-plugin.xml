@@ -4,7 +4,7 @@
 
 
     <rules>
-        <resource>filesa.xml</resource>
+        <resource>license-file.xml</resource>
 
 
         <!--
