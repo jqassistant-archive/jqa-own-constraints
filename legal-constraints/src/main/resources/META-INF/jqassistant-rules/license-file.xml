@@ -9,6 +9,7 @@
 
 
     <constraint id="jqa-legal:license:exists" severity="minor">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
             It must exist in the root directory of the project a
             readme file called 'LICENSE'.
@@ -19,12 +20,11 @@
             ]]></description>
         <cypher><![CDATA[
             MATCH
-                (license:File)
-
+                (:RootProject)-[:CONTAINS]->(:File:Directory)-[:CONTAINS]->(license:File)
             WHERE
-                license.fileName =~ '/LICENSE'
-
-            RETURN *
+                license.fileName ends with '/LICENSE'
+            RETURN
+                license
         ]]></cypher>
         <verify>
             <rowCount max="1" min="1" />
