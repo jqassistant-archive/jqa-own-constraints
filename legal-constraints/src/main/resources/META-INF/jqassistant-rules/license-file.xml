@@ -22,7 +22,7 @@
             MATCH
                 (:RootProject)-[:CONTAINS]->(:File:Directory)-[:CONTAINS]->(license:File)
             WHERE
-                license.fileName ends with '/LICENSE'
+                license.fileName starts with '/LICENSE'
             RETURN
                 license
         ]]></cypher>
