@@ -2,8 +2,4 @@
                                name="jQAssistant Github Rules">
     <description>Rules to check various aspects of our infrastructure at Github</description>
 
-    <rules>
-        <resource>workflows.xml</resource>
-    </rules>
-
 </jqa-plugin:jqassistant-plugin>
