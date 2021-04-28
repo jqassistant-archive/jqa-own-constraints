@@ -3,6 +3,7 @@
     <group id="jqa-plugin:Default">
         <includeConstraint refId="jqa-plugin:UnregisteredLabel"/>
         <includeConstraint refId="jqa-plugin:ImplictlyRegisteredLabelsShouldNotBeRegisteredExplicitly"/>
+        <includeConstraint refId="jqa-plugin:pluginid-must-be-given"/>
     </group>
 
     <concept id="jqa-plugin:Label" severity="info">
@@ -88,4 +89,40 @@
               label as Label, collect(subLabel) as SubLabels
         ]]></cypher>
     </constraint>
+
+
+    <constraint id="jqa-plugin:pluginid-must-be-given">
+        <requiresConcept refId="jqa-plugin:PluginDescriptor"/>
+        <description><![CDATA[
+Starting with version 1.10 of the XML Schema for plugins,
+the root element of the plugin descriptor must carry the id
+attribute. The id itself must start with the prefix 'jqa.'.
+
+An example for a valid root element declaration for a plugin
+descriptor must look like this
+
+<jpd:jqassistant-plugin
+    xmlns:jpd="http://schema.jqassistant.org/plugin/v1.10"
+    name="<Name of the Plugin>"
+    id="jqa.plugin.<pluginid>">
+...
+        ]]></description>
+        <cypher><![CDATA[
+MATCH   (pd:PluginDescriptor)
+            -[:HAS_ROOT_ELEMENT]->(rootElement:Xml {name: 'jqassistant-plugin'})
+OPTIONAL MATCH  (rootElement)
+            -[:HAS_ATTRIBUTE]->(attribute:Xml:Attribute {name: 'id'})
+
+WITH    pd, rootElement, attribute
+
+WHERE   attribute IS NULL
+        OR NOT (attribute.value STARTS WITH "jqa.plugin.")
+        OR NOT (rootElement)-[:DECLARES_NAMESPACE]->(:Xml:Namespace { prefix:"jpd", uri:"http://schema.jqassistant.org/plugin/v1.10" })
+
+RETURN  *
+
+]]></cypher>
+    </constraint>
+
+
 </jqa:jqassistant-rules>
