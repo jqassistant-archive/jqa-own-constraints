@@ -92,6 +92,7 @@
 
 
     <constraint id="jqa-plugin:pluginid-must-be-given">
+        <requiresConcept refId="jqa-plugin:PluginDescriptor"/>
         <description><![CDATA[
 Starting with version 1.10 of the XML Schema for plugins,
 the root element of the plugin descriptor must carry the id
@@ -107,29 +108,20 @@ descriptor must look like this
 ...
         ]]></description>
         <cypher><![CDATA[
-MATCH   (descriptorFile:File:Xml)
-
-WHERE   descriptorFile.fileName ENDS WITH
-            "/src/main/resources/META-INF/jqassistant-plugin.xml"
-
-WITH    descriptorFile
-
 MATCH   (pd:PluginDescriptor)
-            -[:HAS_ROOT_ELEMENT]->(rootElement:Xml {name: 'jqassistant-plugin'}) ,
-        (rootElement)-[:DECLARES_NAMESPACE]->(ns:Xml:Namespace)
-
+            -[:HAS_ROOT_ELEMENT]->(rootElement:Xml {name: 'jqassistant-plugin'})
 OPTIONAL MATCH  (rootElement)
             -[:HAS_ATTRIBUTE]->(attribute:Xml:Attribute {name: 'id'})
 
-WITH    pd, rootElement, attribute, ns
+WITH    pd, rootElement, attribute
 
 WHERE   attribute IS NULL
         OR NOT (attribute.value STARTS WITH "jqa.plugin.")
-        OR ns.prefix <> "jpd"
-        OR ns.uri <> "http://schema.jqassistant.org/plugin/v1.10"
+        OR NOT (rootElement)-[:DECLARES_NAMESPACE]->(:Xml:Namespace { prefix:"jpd", uri:"http://schema.jqassistant.org/plugin/v1.10" })
 
 RETURN  *
-        ]]></cypher>
+
+]]></cypher>
     </constraint>
 
 
