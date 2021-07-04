@@ -101,8 +101,8 @@ attribute. The id itself must start with the prefix 'jqa.'.
 An example for a valid root element declaration for a plugin
 descriptor must look like this
 
-<jpd:jqassistant-plugin
-    xmlns:jpd="http://schema.jqassistant.org/plugin/v1.10"
+<jqassistant-plugin
+    xmlns="http://schema.jqassistant.org/plugin/v1.10"
     name="<Name of the Plugin>"
     id="jqa.plugin.<pluginid>">
 ...
@@ -117,7 +117,7 @@ WITH    pd, rootElement, attribute
 
 WHERE   attribute IS NULL
         OR NOT (attribute.value STARTS WITH "jqa.plugin.")
-        OR NOT (rootElement)-[:DECLARES_NAMESPACE]->(:Xml:Namespace { prefix:"jpd", uri:"http://schema.jqassistant.org/plugin/v1.10" })
+        OR NOT (rootElement)-[:DECLARES_NAMESPACE]->(:Xml:Namespace { uri:"http://schema.jqassistant.org/plugin/v1.10" })
 
 RETURN  *
 
