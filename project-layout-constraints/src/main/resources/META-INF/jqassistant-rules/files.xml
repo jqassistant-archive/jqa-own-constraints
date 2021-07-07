@@ -57,16 +57,12 @@ There should be an Asciidoctor document for the release notes of this version.
 ]]></description>
         <cypher><![CDATA[
             MATCH
-                (rp:RootProject:Maven),
-                (rl:File)
-            WHERE
-                rl.fileName = "/src/main/asciidoc/release-notes.adoc"
+                (rp:RootProject:Maven)
+            WHERE NOT
+                (rp)-[:CONTAINS]->(:Directory)-[:CONTAINS]->(:File{fileName: "/release-notes.adoc"})
             RETURN
-                rp.name     AS Project
+                rp.name AS Project
         ]]></cypher>
-        <verify>
-            <rowCount min="1" max="1" />
-        </verify>
     </constraint>
 
 
