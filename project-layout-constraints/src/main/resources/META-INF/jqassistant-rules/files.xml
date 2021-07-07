@@ -57,19 +57,10 @@ There should be an Asciidoctor document for the release notes of this version.
 ]]></description>
         <cypher><![CDATA[
             MATCH
-                (rp:RootProject:Maven)
-
-            WITH
-                '[/\\\\]src[/\\\\]main[/\\\\]asciidoc[/\\\\]releasenotes[/\\\\]' + split(rp.version,'-')[0] + '.adoc'
-                    AS requiredReleaseNotes,
-                rp
-
-            MATCH
+                (rp:RootProject:Maven),
                 (rl:File)
-
             WHERE
-                rl.fileName =~ requiredReleaseNotes
-
+                rl.fileName = "/src/main/asciidoc/release-notes.adoc"
             RETURN
                 rp.name     AS Project
         ]]></cypher>
