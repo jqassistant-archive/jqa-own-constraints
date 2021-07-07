@@ -14,10 +14,10 @@ details on '.editorconfig' see http://editorconfig.org/
 ]]></description>
         <cypher><![CDATA[
             MATCH
-                (config:File)
+                (:Maven:Project)-[:CONTAINS]->(config:File)
 
             WHERE
-                config.fileName =~ '/.editorconfig'
+                config.fileName ends with '/.editorconfig'
 
             RETURN *
         ]]></cypher>
@@ -37,10 +37,10 @@ details on '.editorconfig' see http://editorconfig.org/
             ]]></description>
         <cypher><![CDATA[
             MATCH
-                (readme:File)
+                (:Maven:Project)-[:CONTAINS]->(readme:File)
 
             WHERE
-                readme.fileName =~ '/readme.adoc'
+                readme.fileName ends with '/readme.adoc'
 
             RETURN *
         ]]></cypher>

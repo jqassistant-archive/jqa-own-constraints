@@ -20,9 +20,9 @@
             ]]></description>
         <cypher><![CDATA[
             MATCH
-                (:RootProject)-[:CONTAINS]->(:File:Directory)-[:CONTAINS]->(license:File)
+                (:RootProject)-[:CONTAINS]->(license:File)
             WHERE
-                license.fileName starts with '/LICENSE'
+                license.fileName ends with '/LICENSE'
             RETURN
                 license
         ]]></cypher>
