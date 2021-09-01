@@ -1,4 +1,6 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.10"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v1.10 http://schema.jqassistant.org/rule/jqassistant-rule-v1.10.xsd">
 
     <group id="jqa-project-layout">
         <includeConstraint refId="jqa-project-layout:documentation:releasenotes-exists" />
@@ -67,4 +69,4 @@ There should be an Asciidoctor document for the release notes of this version.
 
 
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>

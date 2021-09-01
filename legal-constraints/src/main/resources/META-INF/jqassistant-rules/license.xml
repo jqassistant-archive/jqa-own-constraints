@@ -5,7 +5,9 @@
  ! filesa.xml.
  ! Oliver B. Fischer, 2016-08-23
  !-->
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.10"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v1.10 https://schema.jqassistant.org/rules/jqassistant-rules-v1.10.xsd">
 
     <group id="jqa-legal:license">
         <includeConstraint refId="jqa-legal:license:only-one-in-pom"/>
@@ -76,4 +78,4 @@ to declare the license in this project as follows:
         </verify>
     </constraint>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>
