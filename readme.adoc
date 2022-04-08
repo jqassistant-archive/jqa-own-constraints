@@ -1,0 +1,17 @@
+= jQAssistant Own Constraints
+
+Architectural and project layout rules for all jQAssistant subprojects.
+
+== Provided jQAssistant rule plugins
+
+`com.buschmais.jqassistant:github-integration`::
+    *jQAssistant Github Integration Rules* to ensure the correct Github integration
+`com.buschmais.jqassistant:legal-constraint`::
+    *jQAssistant Legal Rules* to ensure that all license related informations are provided correctly
+`com.buschmais.jqassistant:maven-commmon-constraints`::
+    *jQAssistant Maven Rules* to ensure that all Maven projects for jQAssistant are correctly configured
+`com.buschmais.jqassistant:plugin-rules`::
+    *jQAssistant Plugin Rules* with rules to ensure the correct configuration and implementation of jQAssistant plugins
+`com.buschmais.jqassistant:project-layout-constraints`::
+    *jQAssistant Project Layout Constraints* with rules regarding requirements on the directory structure and existing files in each Git project for jQAssistant
+

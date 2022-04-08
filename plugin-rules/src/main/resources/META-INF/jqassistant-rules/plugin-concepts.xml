@@ -1,0 +1,65 @@
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.10"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v1.10 http://schema.jqassistant.org/rule/jqassistant-rule-v1.10.xsd">
+
+    <concept id="jqa-plugin:Label" severity="info">
+        <description><![CDATA[
+        Adds the labels "XO" and "Label" to all interfaces representing XO labels.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:Main:Artifact)
+                -[:CONTAINS]->(label:Interface),
+              (label)
+                -[:IMPLEMENTS*0..]->(:Type)
+                -[:ANNOTATED_BY]->()
+                -[:OF_TYPE]->(:Type {fqn: "com.buschmais.xo.neo4j.api.annotation.Label"})
+            SET
+              label:XO:Label
+            RETURN
+              label.fqn
+        ]]></cypher>
+    </concept>
+
+    <concept id="jqa-plugin:PluginDescriptor" severity="info">
+        <description><![CDATA[
+        Adds a label "PluginDescriptor" to classpath resources "/META-INF/jqassistant-plugin.xml".
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:Main:Artifact)
+                -[:CONTAINS]->(pluginDescriptor:File:Xml {fileName: "/META-INF/jqassistant-plugin.xml"})
+            SET
+              pluginDescriptor:jQAssistant:PluginDescriptor
+            RETURN
+              pluginDescriptor
+        ]]></cypher>
+    </concept>
+
+    <concept id="jqa-plugin:PluginDescriptorRegistersModel" severity="info">
+        <requiresConcept refId="jqa-plugin:PluginDescriptor"/>
+        <description><![CDATA[
+        Creates a relationship REGISTERS_MODEL from /model/class-XML nodes to the corresponding model types.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (:PluginDescriptor)
+                -[:HAS_ROOT_ELEMENT]->()
+                -[:HAS_ELEMENT]->(model:Element{name:"model"}),
+              (model)
+                -[:HAS_ELEMENT]->(class:Element)
+                -[:HAS_TEXT]->(className:Text)
+            WITH
+              class, className
+            MATCH
+              (:Main:Artifact)-[:CONTAINS]->(type:Type)
+            WHERE
+              className.value = type.fqn
+            MERGE
+              (class)-[:REGISTERS_MODEL]->(type)
+            RETURN
+              type.fqn AS Type
+        ]]></cypher>
+    </concept>
+
+</jqassistant-rules>

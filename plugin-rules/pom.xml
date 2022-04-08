@@ -7,6 +7,7 @@
         <version>1.12.0-SNAPSHOT</version>
     </parent>
 
+    <name>jQAssistant Plugin Rules</name>
     <groupId>com.buschmais.jqassistant</groupId>
     <artifactId>plugin-rules</artifactId>
 

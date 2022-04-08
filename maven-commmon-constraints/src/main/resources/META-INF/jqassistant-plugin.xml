@@ -4,8 +4,7 @@
                     name="jQAssistant Internal Maven Rules" id="jqa.internal.ownconstraints.mavenrules">
     <description>Rules Maven projects</description>
     <rules>
-        <resource>concepts.xml</resource>
-        <resource>maven-constraints.xml</resource>
+        <resource>maven-concepts.xml</resource>
         <resource>maven-constraints.yaml</resource>
         <resource>maven-dependency-constraints.xml</resource>
     </rules>

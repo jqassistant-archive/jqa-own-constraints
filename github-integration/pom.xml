@@ -7,6 +7,7 @@
         <version>1.12.0-SNAPSHOT</version>
     </parent>
 
+    <name>jQAssistant Github Integration Rules</name>
     <artifactId>github-integration</artifactId>
 
 

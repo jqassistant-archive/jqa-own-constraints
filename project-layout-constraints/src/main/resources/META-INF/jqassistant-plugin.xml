@@ -5,7 +5,7 @@
     <description>Rules for the layout and content of each jQAssistant project.</description>
 
     <rules>
-        <resource>files.xml</resource>
+        <resource>files-constraints.xml</resource>
     </rules>
 
 </jqassistant-plugin>

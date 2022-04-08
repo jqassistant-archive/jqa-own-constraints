@@ -9,15 +9,24 @@ the label RootProject. This is needed to be able to write constraints
 on the root Maven POM of a Maven project.
             ]]></description>
         <cypher><![CDATA[
-        WITH [
-          {groupId:"com.buschmais.jqassistant", artifactId:"jqa-uber-parent"},
-          {groupId:"com.buschmais.jqassistant.plugin", artifactId:"parent"}
-        ] as projects
-        UNWIND projects as project
-        MATCH   (rp:Maven:Project:Directory)-[:HAS_PARENT]->(p:Maven:Project)
-        WHERE   p.groupId=project.groupId and p.artifactId=project.artifactId
-        SET     rp:RootProject
-        RETURN  rp, p
+        WITH
+            [{groupId: "com.buschmais.jqassistant", artifactId: "jqa-uber-parent"},
+             {groupId: "com.buschmais.jqassistant.plugin", artifactId: "parent"}] AS projects
+
+        UNWIND
+            projects AS project
+
+        MATCH
+            (rp:Maven:Project:Directory)-[:HAS_PARENT]->(p:Maven:Project)
+
+        WHERE
+            p.groupId=project.groupId and p.artifactId=project.artifactId
+
+        SET
+            rp:RootProject
+
+        RETURN
+            rp, p
 
 ]]></cypher>
     </concept>
@@ -27,12 +36,17 @@ on the root Maven POM of a Maven project.
 This concept labels all artifacts with a groupId starting with "com.buschmais.jqassistant" with "jQAssistant".
             ]]></description>
         <cypher><![CDATA[
+        MATCH
+            (artifact:Artifact)
 
-        MATCH   (artifact:Artifact)
-        WHERE   artifact.group starts with "com.buschmais.jqassistant"
-        SET     artifact:jQAssistant
-        RETURN  artifact
+        WHERE
+            artifact.group starts with "com.buschmais.jqassistant"
 
+        SET
+            artifact:jQAssistant
+
+        RETURN
+            artifact
 ]]></cypher>
     </concept>
 

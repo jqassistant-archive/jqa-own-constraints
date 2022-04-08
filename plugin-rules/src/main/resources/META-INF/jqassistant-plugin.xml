@@ -5,7 +5,8 @@
     <description>Rules for jQAssistant plugins</description>
 
     <rules>
-        <resource>plugin.xml</resource>
+        <resource>plugin-concepts.xml</resource>
+        <resource>plugin-constraints.xml</resource>
     </rules>
 
 </jqassistant-plugin>

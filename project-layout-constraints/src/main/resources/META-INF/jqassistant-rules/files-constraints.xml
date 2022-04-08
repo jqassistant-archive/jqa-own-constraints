@@ -12,14 +12,15 @@
         <description><![CDATA[
 Each repository should contain an editor config configuration file
 called '.editorconfig' in its root directory. For more
-details on '.editorconfig' see http://editorconfig.org/
+details on '.editorconfig' see https://editorconfig.org/
 ]]></description>
         <cypher><![CDATA[
             MATCH
-                (:Maven:Project)-[:CONTAINS]->(config:File)
+                (project:Maven:Project:Directory:File)-[:CONTAINS]->(config:File)
 
             WHERE
-                config.fileName ends with '/.editorconfig'
+                config.fileName ENDS WITH '/.editorconfig'
+                AND NOT (project)<-[:HAS_MODULE]-(:Maven)
 
             RETURN *
         ]]></cypher>
@@ -39,10 +40,12 @@ details on '.editorconfig' see http://editorconfig.org/
             ]]></description>
         <cypher><![CDATA[
             MATCH
-                (:Maven:Project)-[:CONTAINS]->(readme:File)
+                (project:Maven:Project:Directory:File)
+                    -[:CONTAINS]->(readme:File)
 
             WHERE
-                readme.fileName ends with '/readme.adoc'
+                readme.fileName ENDS WITH '/readme.adoc'
+                AND NOT (project)<-[:HAS_MODULE]-(:Maven)
 
             RETURN *
         ]]></cypher>
@@ -59,14 +62,16 @@ There should be an Asciidoctor document for the release notes of this version.
 ]]></description>
         <cypher><![CDATA[
             MATCH
-                (rp:RootProject:Maven)
-            WHERE NOT
-                (rp)-[:CONTAINS]->(:Directory)-[:CONTAINS]->(:File{fileName: "/release-notes.adoc"})
+                (project:Project:Maven:Directory:File)
+
+            WHERE
+                NOT (project)-[:CONTAINS]->(:Directory)-[:CONTAINS]->(:File {fileName: "/release-notes.adoc"})
+                AND NOT (project)<-[:HAS_MODULE]-(:Maven)
+
             RETURN
-                rp.name AS Project
+                project.name AS Project
         ]]></cypher>
     </constraint>
-
 
 
 </jqassistant-rules>

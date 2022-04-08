@@ -13,18 +13,20 @@
     <constraint id="jqa-legal:license:exists" severity="minor">
         <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
         <description><![CDATA[
-            It must exist in the root directory of the project a
-            readme file called 'LICENSE'.
+It must exist in the root directory of the project a
+readme file called 'LICENSE'.
 
-            This file contains the license of the project
-            and should help users to identify the type of license
-            the project uses.
+This file contains the license of the project
+and should help users to identify the type of license
+the project uses.
             ]]></description>
         <cypher><![CDATA[
             MATCH
                 (:RootProject)-[:CONTAINS]->(license:File)
+
             WHERE
-                license.fileName ends with '/LICENSE'
+                license.fileName ENDS WITH '/LICENSE'
+
             RETURN
                 license
         ]]></cypher>
@@ -45,16 +47,16 @@ its Maven POM. This project has one or more then one license
 specified.
             ]]></description>
         <cypher><![CDATA[
-
-        MATCH (n:Project:Directory:Maven)-[HAS_MODEL]
-                ->(m:Maven:Pom)
+        MATCH
+            (n:Project:Directory:Maven)
+                -[HAS_MODEL]->(m:Maven:Pom)
                 -[USES_LICENSE]->(l:License:Maven)
 
-        WHERE NOT((n)-[:HAS_EFFECTIVE_MODEL]->(m))
+        WHERE
+            NOT (n)-[:HAS_EFFECTIVE_MODEL]->(m)
 
-        RETURN n.name           AS Project,
-               n.groupId        AS groupId,
-               n.artifactId     AS artifactId
+        RETURN
+            n.name AS Project, n.groupId AS groupId, n.artifactId AS artifactId
         ]]></cypher>
         <verify>
             <rowCount min="1" max="1" />
@@ -70,26 +72,29 @@ to declare the license in this project as follows:
     <licenses>
         <license>
             <name>GNU General Public License, v3</name>
-            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
         </license>
     </licenses>
 
             ]]></description>
         <cypher><![CDATA[
-            MATCH (n:Project:Directory:Maven)
+            MATCH
+                (n:Project:Directory:Maven)
                     -[HAS_MODEL]->(m:Maven:Pom)
                     -[USES_LICENSE]->(l:License:Maven)
 
-            WHERE NOT((n)-[:HAS_EFFECTIVE_MODEL]->(m))
+            WHERE
+                NOT (n)-[:HAS_EFFECTIVE_MODEL]->(m)
 
-            WITH l, n
+            WITH
+                l, n
 
-            MATCH (l {name: "GNU General Public License, v3",
-                      url:"http://www.gnu.org/licenses/gpl-3.0.html"})
+            MATCH
+                (l { name: "GNU General Public License, v3",
+                     url:"https://www.gnu.org/licenses/gpl-3.0.html" })
 
-            RETURN n.name           AS Project,
-                   n.groupId        AS groupId,
-                   n.artifactId     AS artifactId
+            RETURN
+                n.name AS Project, n.groupId AS groupId, n.artifactId AS artifactId
         ]]></cypher>
         <verify>
             <rowCount min="1" max="1"/>

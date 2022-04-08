@@ -1,29 +1,46 @@
+groups:
+  - id: jqa-maven-constraints
+    includedConstraints:
+      - refId: jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts
+      - refId: jqa-maven-constraints:organisation-present
+      - refId: jqa-maven-constraints:homepage
+      - refId: jqa-maven-constraints:project-description
+      - refId: jqa-maven-constraints:scm-connection-declaration
+      - refId: jqa-maven-constraints:sonatype-oss
+      - refId: jqa-maven-constraints:version-information
+      - refId: jqa-maven-constraints:java-compiler-target-version
+      - refId: jqa-maven-constraints:project-name
+
 constraints:
   - id: jqa-maven-constraints:organisation-present
     requiresConcepts:
       - refId: jqa-maven-constraints:mark-root-project
     source: |
-      WITH [
-        { name: 'name', value: 'jQAssistant Development Team'},
-        { name: 'url', value: 'https://jqassistant.org'}
-      ] AS expectedChilds
-      UNWIND expectedChilds AS expectedChild
-      MATCH (rp:RootProject)-[:HAS_MODEL]->(m:Xml:Pom:Maven)
-            -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
-            -[:HAS_ELEMENT]->(org:Element:Xml {name: "organization"})
-            -[:HAS_ELEMENT]->(child:Element:Xml),
+      WITH 
+        [{ name: 'name', value: 'jQAssistant Development Team'},
+         { name: 'url', value: 'https://jqassistant.org'}] AS expectedChilds
+      UNWIND 
+        expectedChilds AS expectedChild
+      MATCH 
+        (rp:RootProject)
+          -[:HAS_MODEL]->(m:Xml:Pom:Maven)
+          -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
+          -[:HAS_ELEMENT]->(org:Element:Xml {name: "organization"})
+          -[:HAS_ELEMENT]->(child:Element:Xml),
 
-            (child)-[:HAS_TEXT]->(text)
-
-      WHERE child.name = expectedChild.name
-            AND text.value = expectedChild.value
-
-      RETURN child
+          (child)-[:HAS_TEXT]->(text)
+      
+      WHERE 
+        child.name = expectedChild.name
+        AND text.value = expectedChild.value
+      
+      RETURN 
+        child
     verify:
       rowCount:
         min: 2
         max: 2
-    description: |
+    description: |+
       The information on the organisation of the jQAssistant project
       is not correct or even missing.
 
@@ -35,3 +52,242 @@ constraints:
         <url>https://jqassistant.org</url>
       </organization>
 
+  - id: jqa-maven-constraints:homepage
+    severity: minor
+    description: |+
+      The homepage of jQAssistant must be defined as the homepage of
+      the Maven project. Please ensure that the following line is
+      present in the parent POM:
+
+      <url>https://jqassistant.org/</url>
+
+    source: |
+      MATCH
+        (projectRoot:Directory:Maven:File:Project)
+          -[:HAS_MODEL]->(model:Maven:Pom:Xml) // Find the POM of the Maven project
+          -[:HAS_ROOT_ELEMENT]->(:Element:Xml)
+          -[:HAS_ELEMENT]->(url:Element:Xml {name: "url"}) // Find the element for the URL of the project 
+          -[:HAS_TEXT]->(text:Text:Xml)
+      
+      WHERE       
+        NOT (projectRoot)<-[:HAS_MODULE]-() // Take only the top level parent in the current project
+                                            // It is the only project which does not have a (Maven) module
+        AND NOT (url)-[:HAS_TEXT]->(text:Text:Xml {value: 'https://jqassistant.org/'})
+      
+      RETURN      
+        projectRoot.name AS Projectname, model.fileName AS File      
+
+  - id: jqa-maven-constraints:sonatype-oss
+    severity: minor
+    description: |+      
+        Defined the Sonatype Nexus Snapshot repository in the main POM of
+        the Maven project.
+        
+        <repositories>
+          <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>      
+          </repository>
+        </repositories>
+        
+        Adding this repository to the POM helps possible contributors to get started
+        with jQAssistant. If this repository is present everyone can simply clone
+        the current development/snapshot version of a project and build it. Maven
+        will find all other development/snapshot version of all jQAssistant dependencies
+        it needs in this repository.
+        
+        Without this repository definition a possible contributor must add this
+        to its settings.xml or build all required dependencies by itself.
+
+    source: |
+      MATCH       
+        (projectRoot:Directory:Maven:File:Project)
+          -[:HAS_MODEL]->(model:Xml:Pom:Maven)
+          -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
+          -[:HAS_ELEMENT]->(reps:Element:Xml {name: "repositories"})
+          -[:HAS_ELEMENT]->(r:Xml:Element {name: "repository"})
+          -[:HAS_ELEMENT]->(url:Xml:Element)
+          -[:HAS_TEXT]->(t:Text:Xml {value: "https://oss.sonatype.org/content/repositories/snapshots"})
+      
+      WHERE         
+        NOT (projectRoot)<-[:HAS_MODULE]-()
+      
+      RETURN        
+        projectRoot.name AS Projectname, model.fileName AS File
+
+    verify:       # Explicit verification
+      rowCount:   # The constraint is met, if the resultset has exactly one row
+        max: 1
+        min: 1
+  - id: jqa-maven-constraints:java-compiler-target-version
+    severity: critical
+    description: |+
+      The Maven Compiler plugin must NOT define a Java bytecode target version other than
+      "1.8" as the framework and the plugins must be executable in environments where
+      only Java 8 is available.
+
+      Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. "1.9".
+
+    source: |
+      MATCH     
+        (project:Maven:Project:File:Directory)
+          -[:HAS_EFFECTIVE_MODEL]->(model:Pom:Maven)
+          -[:USES_PLUGIN]->(plugin:Maven:Plugin)
+          -[:IS_ARTIFACT]->(:Artifact {name: "maven-compiler-plugin"}),
+      
+        (plugin)-[:HAS_CONFIGURATION]->(configuration:Configuration:Maven)
+          -[:CONTAINS]->(target:Property {name:"target"})
+      
+       WHERE     
+        target.value <> "1.8"
+      
+       RETURN    
+        project AS Project, target.value AS InvalidCompilerTarget
+
+  - id: jqa-maven-constraints:AvoidDependenciesTojQAssistantTestArtifacts
+    severity: critical
+    requiresConcepts:
+      - refId: jqa-maven-constraints:jQAssistantArtifact
+    description: |+
+      The main artifact created by a jQAssistant Maven project must not depend on 
+      jQAssistant test artifacts (i.e. type "test-jar").
+  
+      Usually the reason is a missing "test" scope in the dependency declaration.      
+
+    source: |
+      MATCH       
+        (project:Maven:Project:Directory:File)
+          -[:CREATES]->(artifact:Artifact)
+          -[:DEPENDS_ON]->(jQAssistantTestArtifact:jQAssistant:Artifact)
+  
+      WHERE 
+        artifact.type <> "test-jar"
+        AND jQAssistantTestArtifact.type = "test-jar"
+  
+      RETURN      
+        project AS MavenProject, jQAssistantTestArtifact AS TestArtifact      
+
+  - id: jqa-maven-constraints:scm-connection-declaration
+    severity: blocker
+    description: |+
+      The SCM section of this jQAssistant project seems to be not correct. Please
+      ensure that the developer connection and the connection point to a repository
+      in the jQAssistant organization at Github.
+
+      The SCM section of this project should be similar to this one:
+  
+      <scm>
+        <connection>scm:git:git@github.com:jqassistant/jqa-xyz-plugin.git</connection>
+          <developerConnection>scm:git:git@github.com:jqassistant/jqa-xzy-plugin.git</developerConnection>
+          <url>https://github.com/jqassistant/jqa-xyz-plugin</url>
+      </scm>      
+
+    source: |
+      MATCH     
+        (project:Project:Directory:Maven:File)
+          -[:HAS_MODEL]->(model:Maven:Pom) // Use the model and never the effective model
+          -[HAS_SCM]->(scm:Scm:Maven)
+
+      WHERE     
+        scm.developerConnection STARTS WITH "scm:git:git@github.com:jqassistant/"
+        AND scm.connection STARTS WITH "scm:git:git@github.com:jqassistant/"
+        AND scm.url STARTS WITH "https://github.com/jqassistant/"
+        AND NOT (project)<-[:HAS_MODULE]-()
+
+      RETURN    
+        count(scm) AS existing
+
+    verify:
+      aggregation:
+        column: existing
+        min: 1
+        max: 1
+  - id: jqa-maven-constraints:version-information
+    severity: minor
+    description: |+
+      The Maven toplevel POM in project must provide its own version information.
+
+      Example: <version>1.9</version>
+
+    source: |
+      MATCH       
+        (project:Maven:Directory:File:Project)
+          -[:HAS_MODEL]->(model:Maven:Pom:Xml)
+          -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml {name: "project"})
+    
+      WHERE       
+        NOT (project)<-[:HAS_MODULE]-() // Only the toplevel POM is not a 
+                                        // module of another project
+      
+      WITH        
+          rootElement, model
+    
+      MATCH 
+        (rootElement)
+          -[:HAS_ELEMENT]->(version:Element:Xml {name: "version"})
+          -[:HAS_TEXT]->(text:Text:Xml), 
+          (model)
+
+      RETURN      
+        model.fileName, text.value
+
+    verify: # Explicit verification
+      rowCount: # The constraint is met, if the result set has exactly one row
+        max: 1
+        min: 1
+  - id: jqa-maven-constraints:project-description
+    severity: minor
+    description: |+
+      The Maven project must provide a useful description of the project.
+      Please ensure that the description element is given in the Maven project.
+
+      Example:
+        <description>
+          This plugin for jQAssistant provides support for scanning
+          the black hole in the center of the solar system.
+        </description>
+
+    source: |
+      MATCH     
+        (project:Project:Maven:Directory:File)
+          -[:HAS_MODEL]->(model:Maven:Pom:Xml)
+          -[:HAS_ROOT_ELEMENT]->(re:Element:Xml)
+          -[:HAS_ELEMENT]->(ele:Element:Xml {name: "description"})
+          -[:HAS_TEXT]->(t:Text:Xml)
+      
+      WHERE     
+        NOT (project)<-[:HAS_MODULE]-() // Only the toplevel POM is not a 
+                                        // module of another project
+
+      RETURN    
+        project.name AS Project, model.fileName AS Filename
+
+    verify: # Explicit verification
+      rowCount: # The constraint is met, if the result set has exactly one row
+        max: 1
+        min: 1
+
+  - id: jqa-maven-constraints:project-name
+    severity: minor
+    description: |+
+      The name of the project must be given in the Maven project. Furthermore
+      the name must start with JQAssistant.
+  
+      Please ensure that a line similar to to the following line is
+      present in the parent POM:
+  
+      <name>jQAssistant FooBar Plugin</name>
+
+    source: |
+      MATCH         
+        (project:Maven:File:Project:Directory)
+     
+      WHERE         
+        NOT project.name STARTS WITH "jQAssistant"
+      
+      RETURN        
+        project.name AS Project

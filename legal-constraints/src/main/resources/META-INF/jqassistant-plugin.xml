@@ -4,7 +4,7 @@
                     name="jQAssistant Internal Legal Rules" id="jqa.internal.ownconstraints.legalrules">
     <description>Rules for legal questions on a jQAssistant related project</description>
     <rules>
-        <resource>license-file.xml</resource>
+        <resource>license-constraints.xml</resource>
 
 
         <!--

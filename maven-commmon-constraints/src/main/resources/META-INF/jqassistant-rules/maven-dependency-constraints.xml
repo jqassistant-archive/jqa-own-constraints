@@ -28,6 +28,7 @@
         <includeConstraint refId="jqa-maven-dependency-constraints:tycho-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:xml-declaration"/>
         <includeConstraint refId="jqa-maven-dependency-constraints:yaml-declaration"/>
+        <includeConstraint refId="jqa-maven-dependency-constraints:yaml2-declaration"/>
         <!--
         <includeConstraint refId="jqa-maven-dependency-constraints:asciidoctor-util-declaration"/>
         -->
@@ -64,12 +65,16 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom) // {fileName: 'pom.xml'}
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'common' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-plugin-common.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY] ->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                                            name: 'common' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-plugin-common.version}'
+
         RETURN dependency
     ]]></cypher>
     </constraint>
@@ -105,13 +110,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom) // {fileName: 'pom.xml'}
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'asciidoc-report' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-asciidoc-report-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY] ->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                            name: 'asciidoc-report' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-asciidoc-report-plugin.version}'
+
+        RETURN
+        dependency
     ]]></cypher>
     </constraint>
 
@@ -146,13 +156,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom) // {fileName: 'pom.xml'}
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant',
-                                                     name: 'jqa-distribution-specification' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-distribution-spec.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY] ->(dependency { group:'com.buschmais.jqassistant',
+                                                                            name: 'jqa-distribution-specification' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-distribution-spec.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -187,13 +202,17 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'java' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-java-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'java' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-java-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -225,16 +244,20 @@ or
     ]]></description>
 
         <cypher><![CDATA[
-
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'java8' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-java8-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group:'com.buschmais.jqassistant.plugin',
+                                                                           name: 'java8' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-java8-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -269,14 +292,17 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'xml' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-xml-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'xml' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-xml-plugin.version}'
 
-        RETURN dependency
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -311,14 +337,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'tycho' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-tycho-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'tycho' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-tycho-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -353,13 +383,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'ejb3' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-ejb3-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'ejb3' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-ejb3-plugin.version}'
+
+        RETURN
+        dependency
     ]]></cypher>
     </constraint>
 
@@ -394,13 +429,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'graphml' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-graphml-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'graphml' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-graphml-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -435,13 +475,17 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom)
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'graphql' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-graphql-plugin.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY] ->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                            name: 'graphql' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-graphql-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -476,14 +520,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'jaxrs' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-jaxrs-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'jaxrs' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-jaxrs-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -518,14 +566,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'javaee6' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-javaee6-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'javaee6' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-javaee6-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -560,14 +612,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'jpa2' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-jpa2-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'jpa2' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-jpa2-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -602,14 +658,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'cdi' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-cdi-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'cdi' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-cdi-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -644,14 +704,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'json' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-json-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'json' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-json-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -683,17 +747,20 @@ or
     ]]></description>
 
         <cypher><![CDATA[
-
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'junit' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-junit-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'junit' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-junit-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -727,14 +794,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'maven3' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-maven3-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'maven3' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-maven3-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -768,14 +839,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'spring' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-spring-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'spring' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-spring-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -809,14 +884,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'testng' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-testng-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'testng' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-testng-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -850,14 +929,18 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'osgi' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-osgi-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'osgi' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-osgi-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -883,7 +966,7 @@ or
     <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>rdbms</artifactId>
     <type>test-jar</type>
-    <version>${jqa-yaml-plugin.version}</version>
+    <version>${jqa-rdbms-plugin.version}</version>
     <scope>rdbms</scope>
 </dependency>
     ]]></description>
@@ -892,14 +975,17 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'rdbms' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-rdbms-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'rdbms' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-rdbms-plugin.version}'
 
-        RETURN dependency
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -934,14 +1020,62 @@ or
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant.plugin',
-                                                     name: 'yaml' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-yaml-plugin.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'yaml' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-yaml-plugin.version}'
 
-        RETURN dependency
+        RETURN
+            dependency
+    ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-maven-dependency-constraints:yaml2-declaration" severity="blocker">
+        <requiresConcept refId="jqa-maven-constraints:mark-root-project"/>
+        <description><![CDATA[
+The release tools of jQAssistant require a specific way of declaring
+dependencies on other jQAssistant artifacts. The version information must
+be given in form of a Maven property with a specific name.
+
+A dependency on com.buschmais.jqassistant.plugin:yaml must be declared
+as follows:
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>yaml</artifactId>
+    <version>${jqa-yaml-plugin.version}</version>
+</dependency>
+
+or
+
+<dependency>
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
+    <artifactId>yaml</artifactId>
+    <type>test-jar</type>
+    <version>${jqa-yaml-plugin.version}</version>
+    <scope>test</scope>
+</dependency>
+    ]]></description>
+
+        <cypher><![CDATA[
+
+        // We look only at files with the name pom.xml. This avoids scans of
+        // other Maven related files as dependency-reduced-pom.xml
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.plugin',
+                                                                           name: 'yaml2' })
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-yaml2-plugin.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -966,17 +1100,21 @@ as follows:
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group:'com.buschmais.jqassistant' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-own-constraints.version}' AND
-              dependency.name IN ['project-layout-constraints',
-                                  'maven-commmon-constraints',
-                                  'legal-constraints',
-                                  'own-constraints']
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-own-constraints.version}'
+            AND dependency.name IN ['project-layout-constraints',
+                                    'maven-commmon-constraints',
+                                    'legal-constraints',
+                                    'own-constraints']
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -1021,16 +1159,20 @@ The same applies for the following Maven artifacts too:
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group: 'com.buschmais.jqassistant.core' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              pom.groupId <> 'com.buschmais.jqassistant.core' AND
-              dependency.name IN ['parent', 'analysis', 'report', 'shared',
-                                  'store', 'scanner', 'plugin'] AND
-              dependency.version <> '${jqa-core-framework.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.core' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND pom.groupId <> 'com.buschmais.jqassistant.core'
+            AND dependency.name IN ['parent', 'analysis', 'report', 'shared',
+                                    'store', 'scanner', 'plugin', 'test']
+            AND dependency.version <> '${jqa-core-framework.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -1073,15 +1215,19 @@ The same applies for the following Maven artifacts too:
 
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom )
-                                     -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]
-                                     ->(dependency { group: 'com.buschmais.jqassistant.neo4jserver' })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              pom.groupId <> 'com.buschmais.jqassistant.neo4jserver' AND
-              dependency.name IN ['parent', 'bootstrap', 'neo4jv3', 'test'] AND
-              dependency.version <> '${jqa-neo4jbackend.version}'
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom )
+                -[:DECLARES_DEPENDENCY|:MANAGES_DEPENDENCY]->(dependency { group: 'com.buschmais.jqassistant.neo4jserver' })
 
-        RETURN dependency
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND pom.groupId <> 'com.buschmais.jqassistant.neo4jserver'
+            AND dependency.name IN ['parent', 'bootstrap', 'neo4jv3', 'test']
+            AND dependency.version <> '${jqa-neo4jbackend.version}'
+
+        RETURN
+            dependency
     ]]></cypher>
     </constraint>
 
@@ -1105,15 +1251,18 @@ as follows:
         <cypher><![CDATA[
         // We look only at files with the name pom.xml. This avoids scans of
         // other Maven related files as dependency-reduced-pom.xml
-        MATCH (project:Maven:Project)-[:HAS_MODEL]->(pom:Pom) // {fileName: 'pom.xml'}
-                                     -[*]->(dependency:Maven:Artifact
-                                            {
-                                              group:'com.buschmais.jqassistant',
-                                              name: 'asciidoctor-utilities'
-                                            })
-        WHERE NOT pom.fileName =~ '.*dependency-reduced-pom.xml' AND
-              dependency.version <> '${jqa-asciidoctor-utilities.version}'
-        RETURN dependency
+        MATCH
+            (project:Maven:Project)
+                -[:HAS_MODEL]->(pom:Pom)
+                -[*]->(dependency:Maven:Artifact { group: 'com.buschmais.jqassistant',
+                                                   name: 'asciidoctor-utilities' })
+
+        WHERE
+            NOT pom.fileName =~ '.*dependency-reduced-pom.xml'
+            AND dependency.version <> '${jqa-asciidoctor-utilities.version}'
+
+        RETURN
+            dependency
 
     ]]></cypher>
     </constraint>

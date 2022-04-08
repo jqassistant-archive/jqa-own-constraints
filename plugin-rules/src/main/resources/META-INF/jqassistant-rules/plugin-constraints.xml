@@ -1,0 +1,84 @@
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.10"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v1.10 http://schema.jqassistant.org/rule/jqassistant-rule-v1.10.xsd">
+
+    <group id="jqa-plugin:Default">
+        <includeConstraint refId="jqa-plugin:UnregisteredLabel"/>
+        <includeConstraint refId="jqa-plugin:ImplictlyRegisteredLabelsShouldNotBeRegisteredExplicitly"/>
+        <includeConstraint refId="jqa-plugin:pluginid-must-be-given"/>
+    </group>
+
+    <constraint id="jqa-plugin:UnregisteredLabel">
+        <requiresConcept refId="jqa-plugin:Label"/>
+        <requiresConcept refId="jqa-plugin:PluginDescriptorRegistersModel"/>
+        <description><![CDATA[
+        All XO @Label types must be registered in the plugin descriptor.
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              (label:XO:Label)
+            WHERE
+                NOT ()-[:REGISTERS_MODEL]->()-[:IMPLEMENTS*0..]->(label)
+            RETURN
+              label AS UnregisteredLabel
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="jqa-plugin:ImplictlyRegisteredLabelsShouldNotBeRegisteredExplicitly" severity="info">
+        <requiresConcept refId="jqa-plugin:Label"/>
+        <requiresConcept refId="jqa-plugin:PluginDescriptorRegistersModel"/>
+        <description><![CDATA[
+        XO @Label-interfaces should not be registered explicitly if a deriving interface registers it implicitly.
+
+        Rationale: Reduce class loading/initialization time at startup in larger classpath contexts (e.g. Maven plugin).
+            ]]></description>
+        <cypher><![CDATA[
+            MATCH
+              ()-[:REGISTERS_MODEL]->(label:XO:Label),
+              (subLabel:XO:Label)-[:IMPLEMENTS*]->(label)
+            RETURN
+              label AS Label, collect(subLabel) AS SubLabels
+        ]]></cypher>
+    </constraint>
+
+
+    <constraint id="jqa-plugin:pluginid-must-be-given">
+        <requiresConcept refId="jqa-plugin:PluginDescriptor"/>
+        <description><![CDATA[
+Starting with version 1.10 of the XML Schema for plugins,
+the root element of the plugin descriptor must carry the id
+attribute. The id itself must start with the prefix 'jqa.'.
+
+An example for a valid root element declaration for a plugin
+descriptor must look like this
+
+<jqassistant-plugin
+    xmlns="http://schema.jqassistant.org/plugin/v1.10"
+    name="<Name of the Plugin>"
+    id="jqa.plugin.<pluginid>">
+...
+        ]]></description>
+        <cypher><![CDATA[
+MATCH
+    (pd:PluginDescriptor)
+        -[:HAS_ROOT_ELEMENT]->(rootElement:Xml {name: 'jqassistant-plugin'})
+OPTIONAL MATCH
+    (rootElement)
+        -[:HAS_ATTRIBUTE]->(attribute:Xml:Attribute {name: 'id'})
+
+WITH
+    pd, rootElement, attribute
+
+WHERE
+    attribute IS NULL
+    OR NOT (attribute.value STARTS WITH "jqa.plugin.")
+    OR NOT (rootElement)-[:DECLARES_NAMESPACE]->(:Xml:Namespace { uri: "http://schema.jqassistant.org/plugin/v1.10" })
+
+RETURN
+    *
+
+]]></cypher>
+    </constraint>
+
+
+</jqassistant-rules>
