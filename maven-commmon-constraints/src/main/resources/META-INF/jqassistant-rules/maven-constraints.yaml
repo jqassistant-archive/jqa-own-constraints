@@ -127,10 +127,8 @@ constraints:
     severity: critical
     description: |+
       The Maven Compiler plugin must NOT define a Java bytecode target version other than
-      "1.8" as the framework and the plugins must be executable in environments where
-      only Java 8 is available.
-
-      Note: Test code (i.e. "testTarget") is allowed to use newer Java versions, e.g. "1.9".
+      "11" as the framework and the plugins must be executable in environments where
+      only Java 11 is available.
 
     source: |
       MATCH     
@@ -143,7 +141,7 @@ constraints:
           -[:CONTAINS]->(target:Property {name:"target"})
       
        WHERE     
-        target.value <> "1.8"
+        target.value <> "11"
       
        RETURN    
         project AS Project, target.value AS InvalidCompilerTarget
