@@ -6,7 +6,6 @@ groups:
       - refId: jqa-maven-constraints:homepage
       - refId: jqa-maven-constraints:project-description
       - refId: jqa-maven-constraints:scm-connection-declaration
-      - refId: jqa-maven-constraints:sonatype-oss
       - refId: jqa-maven-constraints:version-information
       - refId: jqa-maven-constraints:java-compiler-target-version
       - refId: jqa-maven-constraints:project-name
@@ -77,52 +76,6 @@ constraints:
       RETURN      
         projectRoot.name AS Projectname, model.fileName AS File      
 
-  - id: jqa-maven-constraints:sonatype-oss
-    severity: minor
-    description: |+      
-        Defined the Sonatype Nexus Snapshot repository in the main POM of
-        the Maven project.
-        
-        <repositories>
-          <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <snapshots>
-              <enabled>true</enabled>
-            </snapshots>      
-          </repository>
-        </repositories>
-        
-        Adding this repository to the POM helps possible contributors to get started
-        with jQAssistant. If this repository is present everyone can simply clone
-        the current development/snapshot version of a project and build it. Maven
-        will find all other development/snapshot version of all jQAssistant dependencies
-        it needs in this repository.
-        
-        Without this repository definition a possible contributor must add this
-        to its settings.xml or build all required dependencies by itself.
-
-    source: |
-      MATCH       
-        (projectRoot:Directory:Maven:File:Project)
-          -[:HAS_MODEL]->(model:Xml:Pom:Maven)
-          -[:HAS_ROOT_ELEMENT]->(rootElement:Element:Xml)
-          -[:HAS_ELEMENT]->(reps:Element:Xml {name: "repositories"})
-          -[:HAS_ELEMENT]->(r:Xml:Element {name: "repository"})
-          -[:HAS_ELEMENT]->(url:Xml:Element)
-          -[:HAS_TEXT]->(t:Text:Xml {value: "https://oss.sonatype.org/content/repositories/snapshots"})
-      
-      WHERE         
-        NOT (projectRoot)<-[:HAS_MODULE]-()
-      
-      RETURN        
-        projectRoot.name AS Projectname, model.fileName AS File
-
-    verify:       # Explicit verification
-      rowCount:   # The constraint is met, if the resultset has exactly one row
-        max: 1
-        min: 1
   - id: jqa-maven-constraints:java-compiler-target-version
     severity: critical
     description: |+
