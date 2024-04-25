@@ -1,7 +1,8 @@
-<jqassistant-plugin xmlns="http://schema.jqassistant.org/plugin/v1.10"
+<jqassistant-plugin xmlns="http://schema.jqassistant.org/plugin/v2.2"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://schema.jqassistant.org/plugin/v1.10 https://schema.jqassistant.org/plugin/jqassistant-plugin-v1.10.xsd"
-                    name="jQAssistant Internal Project Layout Rules" id="jqa.internal.ownconstraints.projectrules">
+                    xsi:schemaLocation="http://schema.jqassistant.org/plugin/v2.2 https://schema.jqassistant.org/plugin/jqassistant-plugin-v2.2.xsd"
+                    id="jqa.internal.ownconstraints.projectrules"
+                    name="jQAssistant Internal Project Layout Rules">
     <description>Rules for the layout and content of each jQAssistant project.</description>
 
     <rules>
